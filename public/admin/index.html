@@ -1,5 +1,41 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — Number Results</title><link rel="stylesheet" href="/styles.css"></head><body><header><div class="wrap nav"><div class="brand">RESULT <span>ADMIN</span></div><a href="/">Public Site</a></div></header><main class="wrap admin"><section class="hero"><p class="eyebrow">OWNER PANEL</p><h1>Publish a Result</h1><p class="muted">Only the project owner can access this management route.</p></section><form id="form" class="panel"><label>Game<select id="game"></select></label><label>Date<input id="date" type="date" required></label><label>Result<input id="value" inputmode="numeric" maxlength="20" required placeholder="Enter result"></label><button>Save Result</button><p id="msg"></p></form></main><script>
-const API=window.__HATCHABLE__.api; const game=document.getElementById("game"),date=document.getElementById("date"),value=document.getElementById("value"),msg=document.getElementById("msg"); date.value=new Date().toISOString().slice(0,10);
-async function init(){const r=await fetch(API+"/admin/games");if(!r.ok){msg.textContent="Admin access required.";return}const games=await r.json();game.innerHTML=games.map(g=>'<option value="'+g.id+'">'+g.name+'</option>').join("")}
-form.onsubmit=async e=>{e.preventDefault();msg.textContent="Saving…";const r=await fetch(API+"/admin/results",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({game_id:game.value,result_date:date.value,result_value:value.value})});const d=await r.json();msg.textContent=r.ok?"Saved successfully.":"Error: "+(d.error||"Unable to save");if(r.ok)value.value=""};init();
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — Number Results Portal</title><link rel="stylesheet" href="/styles.css"></head>
+<body><header class="site-header"><div class="wrap nav"><a class="brand" href="/">NUMBER<span>RESULTS</span> ADMIN</a><nav><a href="/">View Site</a><a href="/history.html">History</a></nav></div></header>
+<main class="wrap page"><p class="eyebrow">ADMIN DASHBOARD</p><h1>Central Result Update</h1><p class="page-intro">Enter one new result when it arrives. The central machine will show the latest updated result, while the selected game's history keeps the new entry.</p>
+<div class="filters" style="align-items:end">
+<label>Game<select id="game"></select></label>
+<label>Date<input id="date" type="date"></label>
+<label>Time<input id="time" type="time"></label>
+<label>Result<input id="value" inputmode="numeric" maxlength="20" placeholder="e.g. 27"></label>
+<button class="button" id="save">Update Result</button>
+</div>
+<div id="message" class="empty"></div>
+<div class="info-strip" id="stats"></div>
+<h2>Recent entries</h2><div id="recent" class="history-box">Loading…</div>
+</main>
+<script>
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+async function init(){
+ const games=await (await fetch('/api/admin/games')).json();
+ document.getElementById('game').innerHTML=(games.games||games||[]).map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('');
+ document.getElementById('date').value=today();
+ document.getElementById('time').value=new Date().toTimeString().slice(0,5);
+ await refresh();
+}
+async function refresh(){
+ const [s,r]=await Promise.all([fetch('/api/admin/stats'),fetch('/api/admin/results')]);
+ const stats=(await s.json()).stats||{}; const data=(await r.json()).results||[];
+ document.getElementById('stats').innerHTML=`<div><strong>Games</strong><span>${stats.games||0} fixed games</span></div><div><strong>Stored results</strong><span>${stats.total_results||0} historical entries</span></div>`;
+ document.getElementById('recent').innerHTML=data.length?'<div class="history-items">'+data.slice(0,24).map(x=>`<div class="history-item"><span>${esc(x.name)} · ${esc(x.result_date)}</span><strong>${esc(x.result_value)}</strong><small>${esc(x.result_time||'')}</small></div>`).join('')+'</div>':'<div class="empty">No results entered yet.</div>';
+}
+document.getElementById('save').onclick=async()=>{
+ const btn=document.getElementById('save'); btn.disabled=true; btn.textContent='Saving…';
+ const body={game_id:document.getElementById('game').value,result_date:document.getElementById('date').value,result_time:document.getElementById('time').value,result_value:document.getElementById('value').value};
+ const res=await fetch('/api/admin/results',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ const data=await res.json(); const msg=document.getElementById('message');
+ if(res.ok){msg.textContent='Result updated successfully.';document.getElementById('value').value='';await refresh();}else msg.textContent=data.error||'Could not update result.';
+ btn.disabled=false;btn.textContent='Update Result';
+};
+init().catch(e=>document.getElementById('message').textContent='Admin data could not be loaded. Sign in as the project owner/admin.');
 </script></body></html>
