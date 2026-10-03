@@ -1,107 +1,51 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Number Results Portal — Latest Results & History</title>
 <meta name="description" content="View the latest available number results and organized historical results in one clean portal.">
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<header class="site-header">
-  <div class="wrap nav">
-    <a class="brand" href="/">NUMBER<span>RESULTS</span></a>
-    <nav>
-      <a class="active" href="/">Home</a>
-      <a href="/history.html">History</a>
-      <a href="/about.html">About</a>
-      <a href="/disclaimer.html">Disclaimer</a>
-    </nav>
-  </div>
-</header>
-
+<header class="site-header"><div class="wrap nav"><a class="brand" href="/">NUMBER<span>RESULTS</span></a><nav><a class="active" href="/">Home</a><a href="/history.html">History</a><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a></nav></div></header>
 <main>
-<section class="hero wrap">
-  <div>
-    <p class="eyebrow">LATEST RESULT DISPLAY</p>
-    <h1>Latest results, <span>shown clearly.</span></h1>
-    <p class="hero-copy">One central result display. Each game keeps its own latest available result until a new result is entered.</p>
-  </div>
-  <div class="hero-meta">
-    <span id="todayLabel">Loading date…</span>
-    <span class="live-dot">● Live database</span>
-  </div>
-</section>
+<section class="hero wrap"><div><p class="eyebrow">LATEST RESULT DISPLAY</p><h1>Latest results, <span>shown clearly.</span></h1><p class="hero-copy">One central result display. Each game keeps its own latest available result until a new result is entered.</p></div><div class="hero-meta"><span id="todayLabel">Loading date…</span><span class="live-dot">● Live database</span></div></section>
 
 <section class="machine-wrap wrap">
-  <div class="machine">
-    <div class="machine-top">
-      <span class="machine-label">LATEST UPDATED RESULT</span>
-      <span id="machineTime">—</span>
-    </div>
-    <div class="machine-screen">
-      <div class="machine-game" id="machineGame">WAITING FOR RESULT</div>
-      <div class="machine-number" id="machineNumber">—</div>
-      <div class="machine-date" id="machineDate">No result entered yet</div>
-    </div>
-    <div class="machine-bottom">
-      <span>Central result display</span>
-      <span id="machineStatus">Ready</span>
-    </div>
-  </div>
+<div class="machine">
+<div class="machine-top"><span class="machine-label">LATEST UPDATED RESULT</span><span id="machineTime">—</span></div>
+<div class="machine-screen" id="machineScreen">
+<div class="machine-game" id="machineGame">RESULT NOT UPDATED</div>
+<div class="machine-number empty-number" id="machineNumber">—</div>
+<div class="machine-date" id="machineDate">No result has been entered yet</div>
+</div>
+<div class="machine-bottom"><span>Central result display</span><span id="machineStatus">Waiting</span></div>
+</div>
 </section>
 
-<section class="wrap section">
-  <div class="section-head">
-    <div>
-      <p class="eyebrow">ALL GAMES</p>
-      <h2>Latest available results</h2>
-    </div>
-    <a class="button ghost" href="/history.html">View history →</a>
-  </div>
-  <div id="gamesGrid" class="games-grid"><div class="loading">Loading results…</div></div>
-</section>
-
-<section class="wrap info-strip">
-  <div><strong>One update at a time</strong><span>Each game changes only when its own new result is entered.</span></div>
-  <div><strong>History stays safe</strong><span>Older results remain available in the History section.</span></div>
-</section>
+<section class="wrap section"><div class="section-head"><div><p class="eyebrow">ALL GAMES</p><h2>Latest available results</h2></div><a class="button ghost" href="/history.html">View history →</a></div><div id="gamesGrid" class="games-grid"><div class="loading">Loading results…</div></div></section>
+<section class="wrap info-strip"><div><strong>One update at a time</strong><span>Each game changes only when its own new result is entered.</span></div><div><strong>History stays safe</strong><span>Older results remain available in the History section.</span></div></section>
 </main>
-
-<footer class="footer">
-  <div class="wrap footer-inner">
-    <span>© <span id="year"></span> Number Results Portal</span>
-    <span><a href="/about.html">About & Contact</a> · <a href="/disclaimer.html">Disclaimer & Privacy</a></span>
-  </div>
-</footer>
-
+<footer class="footer"><div class="wrap footer-inner"><span>© <span id="year"></span> Number Results Portal</span><span><a href="/about.html">About & Contact</a> · <a href="/disclaimer.html">Disclaimer & Privacy</a></span></div></footer>
 <script>
-const fmtDate = (v) => v ? new Date(v + 'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-async function load() {
-  const [todayRes, latestRes] = await Promise.all([fetch('/api/results/today'), fetch('/api/results/latest')]);
-  const today = await todayRes.json();
-  const latest = await latestRes.json();
-  document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  const latestRow = latest.latest;
-  if (latestRow) {
-    document.getElementById('machineGame').textContent = latestRow.name;
-    document.getElementById('machineNumber').textContent = latestRow.result_value;
-    document.getElementById('machineDate').textContent = fmtDate(latestRow.result_date) + (latestRow.result_time ? ' · ' + latestRow.result_time : '');
-    document.getElementById('machineTime').textContent = latestRow.result_time || 'Latest update';
-    document.getElementById('machineStatus').textContent = 'Updated';
-  }
-
-  document.getElementById('gamesGrid').innerHTML = today.games.map(g => `
-    <article class="game-card">
-      <div class="card-top"><span class="game-name">${esc(g.name)}</span><span class="game-time">${esc(g.scheduled_time || '—')}</span></div>
-      <div class="card-result ${g.result_value ? 'has-result' : ''}">${esc(g.result_value || '—')}</div>
-      <div class="card-bottom"><span>${g.result_value ? 'Latest available' : 'No result entered yet'}</span><span>${g.result_date ? fmtDate(g.result_date) : ''}</span></div>
-    </article>`).join('');
+const fmtDate=v=>v?new Date(v+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function load(){
+ const [todayRes,latestRes]=await Promise.all([fetch('/api/results/today'),fetch('/api/results/latest')]);
+ const today=await todayRes.json(); const latest=await latestRes.json();
+ document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ document.getElementById('year').textContent=new Date().getFullYear();
+ const row=latest.latest;
+ if(row){
+   document.getElementById('machineGame').textContent=row.name;
+   document.getElementById('machineNumber').textContent=row.result_value;
+   document.getElementById('machineNumber').classList.remove('empty-number');
+   document.getElementById('machineDate').textContent=fmtDate(row.result_date)+(row.result_time?' · '+row.result_time:'');
+   document.getElementById('machineTime').textContent=row.result_time||'Latest update';
+   document.getElementById('machineStatus').textContent='Updated';
+ } 
+ document.getElementById('gamesGrid').innerHTML=today.games.map(g=>'<article class="game-card"><div class="card-top"><span class="game-name">'+esc(g.name)+'</span><span class="game-time">'+esc(g.scheduled_time||'—')+'</span></div><div class="card-result '+(g.result_value?'has-result':'')+'">'+esc(g.result_value||'—')+'</div><div class="card-bottom"><span>'+(g.result_value?'Latest available':'Waiting for result')+'</span><span>'+(g.result_date?fmtDate(g.result_date):'')+'</span></div></article>').join('');
 }
-load().catch(() => document.getElementById('gamesGrid').innerHTML='<div class="error">Results could not be loaded right now.</div>');
+load().catch(()=>document.getElementById('gamesGrid').innerHTML='<div class="error">Results could not be loaded right now.</div>');
 </script>
-</body>
-</html>
+</body></html>
