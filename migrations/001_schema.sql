@@ -1,0 +1,4 @@
+CREATE TABLE games (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), name text NOT NULL UNIQUE, slug text NOT NULL UNIQUE, result_time text, sort_order integer NOT NULL DEFAULT 0, active boolean NOT NULL DEFAULT true, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE results (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), game_id uuid NOT NULL REFERENCES games(id) ON DELETE CASCADE, result_date date NOT NULL, result_value text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now(), UNIQUE(game_id, result_date));
+CREATE INDEX results_date_idx ON results(result_date);
+CREATE INDEX results_game_date_idx ON results(game_id, result_date);
