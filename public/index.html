@@ -44,7 +44,7 @@ async function load(){
    document.getElementById('machineTime').textContent=row.result_time||'Latest update';
    document.getElementById('machineStatus').textContent='Updated';
  } 
- document.getElementById('gamesGrid').innerHTML=today.games.map(g=>'<article class="game-card"><div class="card-top"><span class="game-name">'+esc(g.name)+'</span><span class="game-time">'+esc(g.scheduled_time||'—')+'</span></div><div class="card-result '+(g.result_value?'has-result':'')+'">'+esc(g.result_value||'—')+'</div><div class="card-bottom"><span>'+(g.result_value?'Latest available':'Waiting for result')+'</span><span>'+(g.result_date?fmtDate(g.result_date):'')+'</span></div></article>').join('');
+ document.getElementById('gamesGrid').innerHTML=today.games.map(g=>'<a class="game-card game-card-link" href="/games/'+encodeURIComponent(g.slug)+'/"><div class="card-top"><span class="game-name">'+esc(g.name)+'</span><span class="game-time">'+esc(g.scheduled_time||'—')+'</span></div><div class="card-result '+(g.result_value?'has-result':'')+'">'+esc(g.result_value||'—')+'</div><div class="card-bottom"><span>'+(g.result_value?'Latest available':'Waiting for result')+'</span><span>'+(g.result_date?fmtDate(g.result_date):'')+'</span></div></a>').join('');
 }
 load().catch(()=>document.getElementById('gamesGrid').innerHTML='<div class="error">Results could not be loaded right now.</div>');
 </script>
