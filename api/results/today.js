@@ -1,6 +1,6 @@
 import { db } from "hatchable";
 export const access="public"; export const methods=["GET"];
 export default async function(req,res){
-  const {rows}=await db.query("SELECT g.id,g.name,g.slug,g.result_time AS scheduled_time,r.result_value,r.result_date,r.result_time,r.updated_at FROM games g LEFT JOIN LATERAL (SELECT result_value,result_date,result_time,updated_at FROM results WHERE game_id=g.id ORDER BY result_date DESC,updated_at DESC LIMIT 1) r ON true WHERE g.active=true ORDER BY g.sort_order ASC,g.name ASC");
+  const {rows}=await db.query("SELECT g.id,g.name,g.slug,g.result_time AS scheduled_time,y.result_value AS yesterday_result,t.result_value AS today_result,y.result_date AS yesterday_date,t.result_date AS today_date FROM games g LEFT JOIN results y ON y.game_id=g.id AND y.result_date=CURRENT_DATE-1 LEFT JOIN results t ON t.game_id=g.id AND t.result_date=CURRENT_DATE WHERE g.active=true ORDER BY g.sort_order ASC,g.name ASC");
   res.json({games:rows});
 }
