@@ -8,7 +8,7 @@
 </head>
 <body>
 <header class="site-header"><div class="wrap nav"><a class="brand" href="/">NUMBER<span>RESULTS</span></a><nav><a class="active" href="/">Home</a><a href="/history.html">History</a><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a></nav></div></header>
-<div class="social-cta"><a class="social-btn whatsapp-btn" href="https://wa.me/918207373406" target="_blank" rel="noopener noreferrer">WhatsApp</a><a class="social-btn telegram-btn" href="https://t.me/+5MHFX7UjtJYwYWI1" target="_blank" rel="noopener noreferrer">Telegram</a></div><main>
+<div class="social-cta"><a class="social-btn whatsapp-btn" href="https://wa.me/918207373406" target="_blank" rel="noopener noreferrer">WhatsApp</a><a class="social-btn telegram-btn" href="https://t.me/+5MHFX7UjtJYwYWI1" target="_blank" rel="noopener noreferrer">Telegram</a></div><div id="newResultAlert" class="new-result-alert" hidden><div><strong>🔔 New Result Published</strong><span id="newResultText">A new result has been updated.</span></div><button id="dismissResultAlert" type="button" aria-label="Dismiss">×</button></div><main>
 <section class="hero wrap"><div><p class="eyebrow">LATEST RESULT DISPLAY</p><h1>Latest results, <span>shown clearly.</span></h1><p class="hero-copy">Today's and yesterday's results in one simple view. Each game keeps its own result until a new result is entered.</p></div><div class="hero-meta"><span id="todayLabel">Loading date…</span><span class="live-dot">● Live database</span></div></section>
 
 <section class="machine-wrap wrap">
@@ -44,6 +44,27 @@
 <footer class="footer"><div class="wrap footer-inner"><span>© <span id="year"></span> Number Results Portal</span><span><a href="/about.html">About & Contact</a> · <a href="/disclaimer.html">Disclaimer & Privacy</a></span></div></footer>
 <script>
 const GAME_SLUGS=["delhi-1","up-1","faridabad","ghaziabad","gali","desawar","shree-ganesh","delhi-bazar"];
+let latestInitialized=false;
+let lastLatestKey=localStorage.getItem("nrp_last_latest_key")||"";
+function showNewResultAlert(row){
+  if(!row) return;
+  const key=String(row.game_id)+"|"+String(row.result_date)+"|"+String(row.updated_at||row.result_time||"");
+  if(!latestInitialized){
+    latestInitialized=true;
+    if(!lastLatestKey) localStorage.setItem("nrp_last_latest_key",key);
+    else if(key!==lastLatestKey) renderNewResultAlert(row,key);
+    return;
+  }
+  if(key!==lastLatestKey) renderNewResultAlert(row,key);
+}
+function renderNewResultAlert(row,key){
+  lastLatestKey=key; localStorage.setItem("nrp_last_latest_key",key);
+  document.getElementById("newResultText").textContent=row.name+" — "+row.result_value+" · "+fmtDate(row.result_date)+(row.result_time?" · "+row.result_time:"");
+  document.getElementById("newResultAlert").hidden=false;
+}
+document.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("dismissResultAlert").addEventListener("click",()=>{document.getElementById("newResultAlert").hidden=true;});
+});
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmtDate=v=>v?new Date(v+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
 let monthlyDate=new Date();
@@ -56,6 +77,7 @@ async function loadBoardAndLatest(){
  document.getElementById('todayLabel').textContent=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
  document.getElementById('year').textContent=now.getFullYear();
  const row=latest.latest;
+ showNewResultAlert(row);
  if(row){
    document.getElementById('machineGame').textContent=row.name;
    document.getElementById('machineNumber').textContent=row.result_value;
