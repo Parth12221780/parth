@@ -31,27 +31,60 @@
 </div>
 </section>
 
+<section class="wrap section monthly-section">
+<div class="results-heading">
+  <div><p class="eyebrow">MONTHLY ARCHIVE</p><h2 id="monthTitle">Monthly Results</h2></div>
+  <div class="month-controls"><button class="button ghost" id="prevMonth" type="button">← Previous</button><button class="button ghost" id="nextMonth" type="button">Next →</button></div>
+</div>
+<div class="monthly-scroll"><table class="monthly-chart"><thead><tr><th>Date</th><th>Delhi 1</th><th>UP 1</th><th>Faridabad</th><th>Ghaziabad</th><th>Gali</th><th>Desawar</th><th>Shree Ganesh</th><th>Delhi Bazar</th></tr></thead><tbody id="monthlyBody"><tr><td colspan="9" class="loading">Loading monthly results…</td></tr></tbody></table></div>
+<div id="monthlyStatus" class="chart-status"></div>
+</section>
 <section class="wrap info-strip"><div><strong>One update at a time</strong><span>Each game changes only when its own new result is entered.</span></div><div><strong>History stays safe</strong><span>Older results remain available in the History section.</span></div></section>
 </main>
 <footer class="footer"><div class="wrap footer-inner"><span>© <span id="year"></span> Number Results Portal</span><span><a href="/about.html">About & Contact</a> · <a href="/disclaimer.html">Disclaimer & Privacy</a></span></div></footer>
 <script>
+const GAME_SLUGS=["delhi-1","up-1","faridabad","ghaziabad","gali","desawar","shree-ganesh","delhi-bazar"];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-async function load(){
+const fmtDate=v=>v?new Date(v+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
+let monthlyDate=new Date();
+monthlyDate.setDate(1);
+function monthLabel(d){return d.toLocaleDateString('en-IN',{month:'long',year:'numeric'});}
+async function loadBoardAndLatest(){
  const [boardRes,latestRes]=await Promise.all([fetch('/api/results/today'),fetch('/api/results/latest')]);
  const board=await boardRes.json(); const latest=await latestRes.json();
- document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
- document.getElementById('year').textContent=new Date().getFullYear();
+ const now=new Date();
+ document.getElementById('todayLabel').textContent=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ document.getElementById('year').textContent=now.getFullYear();
  const row=latest.latest;
  if(row){
    document.getElementById('machineGame').textContent=row.name;
    document.getElementById('machineNumber').textContent=row.result_value;
    document.getElementById('machineNumber').classList.remove('empty-number');
-   document.getElementById('machineDate').textContent=row.result_date+(row.result_time?' · '+row.result_time:'');
+   document.getElementById('machineDate').textContent=fmtDate(row.result_date)+(row.result_time?' · '+row.result_time:'');
    document.getElementById('machineTime').textContent=row.result_time||'Latest update';
    document.getElementById('machineStatus').textContent='Updated';
  }
  document.getElementById('resultsRows').innerHTML=board.games.map(g=>'<a class="result-row" href="/games/'+encodeURIComponent(g.slug)+'/"><div class="result-game"><strong>'+esc(g.name)+'</strong><span>'+esc(g.scheduled_time||'—')+'</span><small>Record Chart</small></div><div class="result-value yesterday">'+esc(g.yesterday_result||'—')+'</div><div class="result-value today">'+esc(g.today_result||'Wait')+'</div></a>').join('');
 }
-load().catch(()=>document.getElementById('resultsRows').innerHTML='<div class="error">Results could not be loaded right now.</div>');
+async function loadMonthly(){
+ const y=monthlyDate.getFullYear(),m=monthlyDate.getMonth()+1;
+ document.getElementById('monthTitle').textContent=monthLabel(monthlyDate)+' Results';
+ const r=await fetch('/api/results/history?year='+y+'&month='+m);
+ const data=await r.json(),map={};
+ data.results.forEach(x=>{const day=Number(String(x.result_date).slice(8,10));if(!map[day])map[day]={};map[day][x.slug]=x.result_value;});
+ const days=new Date(y,m,0).getDate();let html='';
+ for(let d=1;d<=days;d++){
+   html+='<tr><th>'+d+' '+new Date(y,m-1,d).toLocaleDateString('en-IN',{weekday:'short'})+'</th>';
+   GAME_SLUGS.forEach(slug=>{html+='<td>'+(map[d]?.[slug]?esc(map[d][slug]):'<span class="missing">—</span>')+'</td>';});
+   html+='</tr>';
+ }
+ document.getElementById('monthlyBody').innerHTML=html;
+ document.getElementById('monthlyStatus').textContent=data.results.length?data.results.length+' recorded results in '+monthLabel(monthlyDate)+'.':'No results recorded in '+monthLabel(monthlyDate)+' yet.';
+}
+document.getElementById('prevMonth').addEventListener('click',()=>{monthlyDate.setMonth(monthlyDate.getMonth()-1);loadMonthly();});
+document.getElementById('nextMonth').addEventListener('click',()=>{monthlyDate.setMonth(monthlyDate.getMonth()+1);loadMonthly();});
+async function loadAll(){await Promise.all([loadBoardAndLatest(),loadMonthly()]);}
+loadAll().catch(()=>{document.getElementById('resultsRows').innerHTML='<div class="error">Results could not be loaded right now.</div>';document.getElementById('monthlyStatus').textContent='Monthly results could not be loaded right now.';});
+setInterval(loadAll,30000);
 </script>
 </body></html>
