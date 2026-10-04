@@ -3,42 +3,59 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Result History — Number Results Portal</title>
-<meta name="description" content="Browse historical number results by date, month, year and game.">
+<meta name="description" content="Browse complete date-wise historical results for all games.">
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <header class="site-header"><div class="wrap nav"><a class="brand" href="/">NUMBER<span>RESULTS</span></a><nav><a href="/">Home</a><a class="active" href="/history.html">History</a><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a></nav></div></header>
 <main class="wrap page">
-  <p class="eyebrow">ARCHIVE</p><h1>Result History</h1><p class="page-intro">Browse the complete stored history. New daily entries are automatically arranged by date after an admin update.</p>
+  <p class="eyebrow">DATABASE ARCHIVE</p><h1>Result History</h1>
+  <p class="page-intro">Complete date-wise database history. Every game is shown together so you can check a full day at a glance.</p>
   <div class="filters">
     <label>Year<select id="year"></select></label>
     <label>Month<select id="month"><option value="">All months</option><option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select></label>
     <label>Game<select id="game"><option value="">All games</option></select></label>
     <button class="button" id="apply">Show results</button>
   </div>
-  <div id="history" class="history-box">Loading history…</div>
+  <div class="history-summary" id="historySummary"></div>
+  <div id="history" class="history-box history-table-wrap">Loading history…</div>
 </main>
 <footer class="footer"><div class="wrap footer-inner"><span>© <span id="footYear"></span> Number Results Portal</span><span><a href="/about.html">About & Contact</a> · <a href="/disclaimer.html">Disclaimer & Privacy</a></span></div></footer>
 <script>
+const GAMES=[
+ {slug:'delhi-1',name:'Delhi 1'},
+ {slug:'up-1',name:'UP 1'},
+ {slug:'faridabad',name:'Faridabad'},
+ {slug:'ghaziabad',name:'Ghaziabad'},
+ {slug:'gali',name:'Gali'},
+ {slug:'desawar',name:'Desawar'},
+ {slug:'shree-ganesh',name:'Shree Ganesh'},
+ {slug:'delhi-bazar',name:'Delhi Bazar'}
+];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=v=>v?new Date(v+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
 async function init(){
- const data=await (await fetch('/api/results/today')).json();
- const y=document.getElementById('year'); const now=new Date().getFullYear();
- for(let i=now;i>=now-5;i--) y.insertAdjacentHTML('beforeend',`<option value="${i}">${i}</option>`);
- data.games.forEach(g=>document.getElementById('game').insertAdjacentHTML('beforeend',`<option value="${esc(g.slug)}">${esc(g.name)}</option>`));
- y.value=now; document.getElementById('footYear').textContent=now; load();
+ const y=document.getElementById('year'),now=new Date().getFullYear();
+ for(let i=now;i>=2000;i--) y.insertAdjacentHTML('beforeend',`<option value="${i}">${i}</option>`);
+ GAMES.forEach(g=>document.getElementById('game').insertAdjacentHTML('beforeend',`<option value="${g.slug}">${g.name}</option>`));
+ y.value=now;document.getElementById('footYear').textContent=now;load();
 }
 async function load(){
- const q=new URLSearchParams({year:document.getElementById('year').value});
- if(document.getElementById('month').value) q.set('month',document.getElementById('month').value);
- if(document.getElementById('game').value) q.set('game',document.getElementById('game').value);
+ const y=document.getElementById('year').value,m=document.getElementById('month').value,game=document.getElementById('game').value;
+ const q=new URLSearchParams({year:y});if(m)q.set('month',m);if(game)q.set('game',game);
  const data=await (await fetch('/api/results/history?'+q)).json();
- if(!data.results.length){document.getElementById('history').innerHTML='<div class="empty">No results found for the selected filters.</div>';return;}
- const grouped={}; data.results.forEach(r=>(grouped[r.result_date]??=[]).push(r));
- document.getElementById('history').innerHTML=Object.entries(grouped).map(([date,rows])=>`<div class="history-day"><div class="history-date">${fmt(date)}</div><div class="history-items">${rows.map(r=>`<div class="history-item"><span>${esc(r.name)}</span><strong>${esc(r.result_value)}</strong><small>${esc(r.result_time||'')}</small></div>`).join('')}</div></div>`).join('');
+ const selectedGames=game?GAMES.filter(g=>g.slug===game):GAMES;
+ const map={};data.results.forEach(r=>{const d=String(r.result_date).slice(0,10);if(!map[d])map[d]={};map[d][r.slug]=r.result_value;});
+ const dates=Object.keys(map).sort((a,b)=>b.localeCompare(a));
+ if(!dates.length){document.getElementById('historySummary').textContent='';document.getElementById('history').innerHTML='<div class="empty">No results found for the selected filters.</div>';return;}
+ let html='<table class="database-history"><thead><tr><th>Date</th>'+selectedGames.map(g=>'<th>'+esc(g.name)+'</th>').join('')+'</tr></thead><tbody>';
+ dates.forEach(date=>{html+='<tr><th>'+fmt(date)+'</th>'+selectedGames.map(g=>{const v=map[date][g.slug];return '<td>'+(v?esc(v):'<span class="missing">—</span>')+'</td>';}).join('')+'</tr>';});
+ html+='</tbody></table>';
+ document.getElementById('history').innerHTML=html;
+ document.getElementById('historySummary').textContent=dates.length+' dates · '+data.results.length+' recorded results · '+(m?document.getElementById('month').selectedOptions[0].text:'Full year')+' '+y;
 }
-document.getElementById('apply').onclick=load; init().catch(()=>document.getElementById('history').innerHTML='<div class="error">History could not be loaded.</div>');
+document.getElementById('apply').onclick=load;
+init().catch(()=>document.getElementById('history').innerHTML='<div class="error">History could not be loaded.</div>');
 </script>
 </body>
 </html>
