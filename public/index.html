@@ -8,6 +8,21 @@
 </head>
 <body>
 <header class="site-header"><div class="wrap nav"><a class="brand" href="/">NUMBER<span>RESULTS</span></a><nav><a class="active" href="/">Home</a><a href="/history.html">History</a><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a></nav></div></header>
+<div class="game-switcher" aria-label="All game result pages">
+  <div class="wrap game-switcher-inner">
+    <a href="/games/delhi-1/">Delhi 1</a>
+    <a href="/games/up-1/">UP 1</a>
+    <a href="/games/faridabad/">Faridabad</a>
+    <a href="/games/ghaziabad/">Ghaziabad</a>
+    <a href="/games/gali/">Gali</a>
+    <a href="/games/desawar/">Desawar</a>
+    <a href="/games/shree-ganesh/">Shree Ganesh</a>
+    <a href="/games/delhi-bazar/">Delhi Bazar</a>
+  </div>
+</div>
+<script>
+(()=>{const p=location.pathname.replace(/\/$/,'')||'/';document.querySelectorAll('.game-switcher a').forEach(a=>{const h=new URL(a.href).pathname.replace(/\/$/,'');if(h===p)a.classList.add('active');});})();
+</script>
 <div class="social-cta"><a class="social-btn whatsapp-btn" href="https://wa.me/918207373406" target="_blank" rel="noopener noreferrer">WhatsApp</a><a class="social-btn telegram-btn" href="https://t.me/+5MHFX7UjtJYwYWI1" target="_blank" rel="noopener noreferrer">Telegram</a></div><div id="newResultAlert" class="new-result-alert" hidden><div><strong>🔔 New Result Published</strong><span id="newResultText">A new result has been updated.</span></div><button id="dismissResultAlert" type="button" aria-label="Dismiss">×</button></div><main>
 <section class="hero wrap"><div><p class="eyebrow">LATEST RESULT DISPLAY</p><h1>Latest results, <span>shown clearly.</span></h1><p class="hero-copy">Today's and yesterday's results in one simple view. Each game keeps its own result until a new result is entered.</p></div><div class="hero-meta"><span id="todayLabel">Loading date…</span><span class="live-dot">● Live database</span></div></section>
 
