@@ -4,7 +4,15 @@ async function initSiteSettings(){
   const r=await fetch('/api/settings');const s=await r.json();
   const fav=document.getElementById('siteFavicon');
   if(fav&&s.favicon_url)fav.href=s.favicon_url;
-  if(s.background_data){document.body.style.backgroundImage='linear-gradient(rgba(7,12,18,.72),rgba(7,12,18,.78)),url("'+s.background_data+'")';document.body.style.backgroundAttachment='fixed';document.body.style.backgroundSize='cover';document.body.style.backgroundPosition='center center';document.body.style.backgroundRepeat='no-repeat';}
+  if(s.background_data){
+   const bgTarget=document.querySelector('main')||document.body;
+   bgTarget.style.backgroundImage='url("'+s.background_data+'")';
+   bgTarget.style.backgroundAttachment='fixed';
+   bgTarget.style.backgroundSize='cover';
+   bgTarget.style.backgroundPosition='center center';
+   bgTarget.style.backgroundRepeat='no-repeat';
+   bgTarget.style.backgroundColor='transparent';
+ }
   document.querySelectorAll('.whatsapp-btn').forEach(a=>{
     const n=String(s.whatsapp_number||'').replace(/\\D/g,'');
     if(n)a.href='https://wa.me/'+(n.startsWith('91')?n:'91'+n);
