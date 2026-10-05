@@ -233,7 +233,7 @@ main.has-site-background::before{
   bottom:0;
   z-index:-1;
   background-image:
-    linear-gradient(rgba(4,8,14,.62),rgba(4,8,14,.72)),
+    linear-gradient(rgba(5,9,16,.12),rgba(5,9,16,.20)),
     var(--site-background-image);
   background-size:cover;
   background-position:center center;
@@ -862,7 +862,7 @@ main.has-site-background .chart-info-card{
   main.has-site-background::before{
     top:58px;
     background-image:
-      linear-gradient(rgba(4,8,14,.70),rgba(4,8,14,.78)),
+      linear-gradient(rgba(5,9,16,.14),rgba(5,9,16,.22)),
       var(--site-background-image);
   }
   main.has-site-background .prose > h1{
@@ -880,5 +880,111 @@ main.has-site-background .chart-info-card{
   }
   main.has-site-background .game-hero > div:first-child{
     padding:15px;
+  }
+}
+/* Premium glass cards: keep the background image clean while putting readable surfaces behind content. */
+main.has-site-background .prose{
+  max-width:980px;
+  padding:0;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+
+main.has-site-background .prose > .eyebrow{
+  display:inline-flex;
+  align-items:center;
+  margin:0 0 12px;
+  padding:7px 14px;
+  border:1px solid rgba(255,92,120,.40);
+  border-radius:999px;
+  background:rgba(18,20,30,.78);
+  color:#ff8ba1;
+  backdrop-filter:blur(12px);
+}
+
+main.has-site-background .prose > h1{
+  width:fit-content;
+  max-width:100%;
+  margin:0 0 18px;
+  padding:14px 22px;
+  border:1px solid rgba(255,255,255,.16);
+  border-left:4px solid #ff4d6d;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(10,16,27,.90),rgba(18,24,36,.72));
+  box-shadow:0 16px 36px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.10);
+  backdrop-filter:blur(14px);
+}
+
+main.has-site-background .prose > p{
+  max-width:100%;
+  margin:0 0 16px;
+  padding:16px 20px;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:15px;
+  background:linear-gradient(135deg,rgba(9,15,25,.84),rgba(17,25,38,.68));
+  box-shadow:0 12px 28px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.07);
+  backdrop-filter:blur(12px);
+  color:#f1f5f9 !important;
+}
+
+main.has-site-background .prose > h2{
+  max-width:100%;
+  margin:24px 0 12px;
+  padding:12px 18px;
+  border:1px solid rgba(255,255,255,.13);
+  border-left:4px solid #ff4d6d;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(11,18,29,.90),rgba(19,27,40,.76));
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  color:#fff;
+  backdrop-filter:blur(12px);
+}
+
+main.has-site-background .prose > .contact-card{
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(11,18,29,.88),rgba(19,27,40,.72));
+  box-shadow:0 14px 30px rgba(0,0,0,.20);
+  backdrop-filter:blur(14px);
+}
+
+main.has-site-background .game-hero > div:first-child{
+  background:linear-gradient(135deg,rgba(10,16,27,.86),rgba(18,25,38,.70));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 14px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter:blur(12px);
+}
+
+main.has-site-background .record-chart-header,
+main.has-site-background .chart-info,
+main.has-site-background .other-games{
+  background:linear-gradient(135deg,rgba(10,16,27,.86),rgba(18,25,38,.70));
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 14px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.07);
+  backdrop-filter:blur(12px);
+}
+
+main.has-site-background .chart-info-card{
+  background:rgba(18,28,42,.72);
+  backdrop-filter:blur(10px);
+}
+
+@media(max-width:560px){
+  main.has-site-background .prose{
+    width:100%;
+  }
+  main.has-site-background .prose > h1{
+    width:100%;
+    padding:14px 15px;
+    border-radius:15px;
+  }
+  main.has-site-background .prose > p{
+    padding:13px 14px;
+    border-radius:13px;
+  }
+  main.has-site-background .prose > h2{
+    padding:11px 14px;
+    border-radius:13px;
   }
 }
