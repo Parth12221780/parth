@@ -232,7 +232,9 @@ main.has-site-background::before{
   right:0;
   bottom:0;
   z-index:-1;
-  background-image:var(--site-background-image);
+  background-image:
+    linear-gradient(rgba(4,8,14,.62),rgba(4,8,14,.72)),
+    var(--site-background-image);
   background-size:cover;
   background-position:center center;
   background-repeat:no-repeat;
@@ -753,4 +755,130 @@ main.has-site-background::before{
 @media(min-width:561px){
   .mobile-monthly-charts{display:none}
   .database-history-mobile{display:none}
+}
+/* Global readability layer for pages using a photo background. */
+main.has-site-background .page,
+main.has-site-background .prose,
+main.has-site-background .game-page{
+  position:relative;
+  z-index:1;
+}
+
+main.has-site-background .prose > h1,
+main.has-site-background .prose > h2,
+main.has-site-background .prose > p,
+main.has-site-background .prose > .contact-card{
+  background:linear-gradient(145deg,rgba(10,17,27,.96),rgba(7,12,20,.94));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+
+main.has-site-background .prose > h1{
+  margin:0 0 18px;
+  padding:20px 24px;
+  color:#fff;
+  border-left:4px solid var(--accent);
+  font-size:clamp(34px,5vw,58px);
+}
+
+main.has-site-background .prose > h2{
+  margin:26px 0 12px;
+  padding:14px 18px;
+  color:#fff;
+  background:linear-gradient(135deg,#142334,#0c151f);
+  border-left:4px solid var(--accent);
+}
+
+main.has-site-background .prose > p{
+  margin:0 0 14px;
+  padding:15px 18px;
+  color:#e7edf5 !important;
+  font-size:15px;
+  line-height:1.75;
+}
+
+main.has-site-background .prose > .contact-card{
+  padding:20px 22px;
+  color:#fff;
+}
+
+main.has-site-background .prose > .contact-card p{
+  color:#d7e0ea !important;
+}
+
+main.has-site-background .game-hero{
+  position:relative;
+  z-index:1;
+}
+
+main.has-site-background .game-hero > div:first-child{
+  padding:20px 22px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  background:linear-gradient(145deg,rgba(10,17,27,.96),rgba(7,12,20,.94));
+  box-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+
+main.has-site-background .game-hero h1{
+  color:#fff;
+}
+
+main.has-site-background .game-hero .page-intro{
+  color:#dce5ee;
+}
+
+main.has-site-background .record-chart-header,
+main.has-site-background .chart-info,
+main.has-site-background .other-games,
+main.has-site-background .section-head,
+main.has-site-background .filters,
+main.has-site-background .history-summary{
+  position:relative;
+  z-index:1;
+}
+
+main.has-site-background .record-chart-header,
+main.has-site-background .chart-info,
+main.has-site-background .other-games{
+  background:linear-gradient(145deg,rgba(10,17,27,.96),rgba(7,12,20,.94));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+
+main.has-site-background .record-chart-header p,
+main.has-site-background .chart-info-card p,
+main.has-site-background .other-games p{
+  color:#dce5ee;
+}
+
+main.has-site-background .chart-info-card{
+  background:rgba(16,27,40,.94);
+  border-color:rgba(255,255,255,.10);
+}
+
+@media(max-width:560px){
+  main.has-site-background::before{
+    top:58px;
+    background-image:
+      linear-gradient(rgba(4,8,14,.70),rgba(4,8,14,.78)),
+      var(--site-background-image);
+  }
+  main.has-site-background .prose > h1{
+    padding:16px 15px;
+    font-size:34px;
+  }
+  main.has-site-background .prose > h2{
+    padding:12px 14px;
+    font-size:22px;
+  }
+  main.has-site-background .prose > p{
+    padding:13px 14px;
+    font-size:14px;
+    line-height:1.65;
+  }
+  main.has-site-background .game-hero > div:first-child{
+    padding:15px;
+  }
 }
