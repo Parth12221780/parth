@@ -1,7 +1,15 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — Number Results Portal</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/admin-seo.css"></head>
-<body><header class="site-header"><div class="wrap nav"><a class="brand" href="/">SattaKing<span>UP1</span> ADMIN</a><nav><a href="/">View Site</a><a href="/history.html">History</a></nav></div></header>
-<main class="wrap page"><p class="eyebrow">ADMIN DASHBOARD</p><h1>Central Result Update</h1><p class="page-intro">Enter one new result when it arrives. The central machine will show the latest updated result, while the selected game's history keeps the new entry.</p>
+<body><header class="site-header"><div class="wrap nav"><a class="brand" href="/">SattaKing<span>UP1</span> ADMIN</a><nav><a href="/">View Site</a><a href="/history.html">History</a><a href="#" id="signOut" hidden>Sign Out</a></nav></div></header>
+<main class="wrap page" id="authPanel" hidden><p class="eyebrow">ADMIN ACCESS</p><h1 id="authTitle">Admin Sign In</h1><p class="page-intro" id="authIntro">Sign in with your admin account to manage results and website settings.</p>
+<form class="filters" id="authForm" style="align-items:end">
+<label id="authEmailField">Email<input id="authEmail" type="email" autocomplete="username" required></label>
+<label>Password<input id="authPassword" type="password" autocomplete="current-password" required></label>
+<button class="button" id="authSubmit" type="submit">Sign In</button>
+</form>
+<div id="authMessage" class="empty"></div>
+</main>
+<main class="wrap page" id="adminMain" hidden><p class="eyebrow">ADMIN DASHBOARD</p><h1>Central Result Update</h1><p class="page-intro">Enter one new result when it arrives. The central machine will show the latest updated result, while the selected game's history keeps the new entry.</p>
 <div class="filters" style="align-items:end">
 <label>Game<select id="game"></select></label>
 <label>Date<input id="date" type="date"></label>
@@ -242,5 +250,38 @@ document.getElementById('save').onclick=async()=>{
  if(res.ok){msg.textContent='Result updated successfully.';document.getElementById('value').value='';await refresh();}else msg.textContent=data.error||'Could not update result.';
  btn.disabled=false;btn.textContent='Update Result';
 };
-init().catch(e=>document.getElementById('message').textContent='Admin data could not be loaded. Sign in as the project owner/admin.');
+window.startAdmin=()=>init().catch(e=>document.getElementById('message').textContent='Admin data could not be loaded. Sign in with an account that has the admin role.');
+</script>
+<script type="module">
+import { getUser, login, logout, handleAuthCallback, acceptInvite, updateUser, AuthError } from "https://esm.sh/@netlify/identity@2.0.0";
+const $=id=>document.getElementById(id);
+let mode="login",inviteToken="";
+function showAuth(title,intro,button,needsEmail=true){$('authTitle').textContent=title;$('authIntro').textContent=intro;$('authSubmit').textContent=button;$('authEmailField').hidden=!needsEmail;$('authEmail').required=needsEmail;$('authPanel').hidden=false;$('adminMain').hidden=true;$('signOut').hidden=true;}
+function showAdmin(){$('authPanel').hidden=true;$('adminMain').hidden=false;$('signOut').hidden=false;window.startAdmin();}
+function enter(user){
+ if(!user){mode="login";showAuth('Admin Sign In','Sign in with your admin account to manage results and website settings.','Sign In');return;}
+ if(!(user.roles||[]).includes('admin')){mode="login";showAuth('Admin Sign In','You are signed in as '+(user.email||'a user')+', but this account does not have the admin role. Ask the site owner to add it, then sign in again.','Sign In Again');$('signOut').hidden=false;return;}
+ showAdmin();
+}
+async function start(){
+ try{
+  const cb=await handleAuthCallback();
+  if(cb?.type==='invite'){mode="invite";inviteToken=cb.token;showAuth('Accept Admin Invite','Choose a password to activate your account.','Set Password',false);return;}
+  if(cb?.type==='recovery'){mode="recovery";showAuth('Reset Password','Choose a new password for your account.','Save Password',false);return;}
+ }catch(e){$('authMessage').textContent=e instanceof AuthError?e.message:'Could not process the sign-in link.';}
+ enter(await getUser());
+}
+$('authForm').addEventListener('submit',async e=>{
+ e.preventDefault();const btn=$('authSubmit'),msg=$('authMessage');btn.disabled=true;msg.textContent='';
+ try{
+  let user;
+  if(mode==='invite')user=await acceptInvite(inviteToken,$('authPassword').value);
+  else if(mode==='recovery')user=await updateUser({password:$('authPassword').value});
+  else{try{await logout();}catch{} user=await login($('authEmail').value.trim(),$('authPassword').value);}
+  mode="login";$('authPassword').value='';enter(user);
+ }catch(err){msg.textContent=err instanceof AuthError&&err.status===401?'Invalid email or password.':(err?.message||'Sign in failed.');}
+ btn.disabled=false;
+});
+$('signOut').addEventListener('click',async e=>{e.preventDefault();try{await logout();}catch{}location.reload();});
+start();
 </script></body></html>

@@ -1,19 +1,10 @@
 # Number Results Portal
 
-[![Deploy to Hatchable](https://hatchable.com/deploy-button.svg)](https://hatchable.com/deploy?repo=https://github.com/Parth12221780/parth)
-
 Informational number-results portal with public results, history, and an admin-managed database. No real-money betting, payments, wallets, or wagering.
 
-This folder is a complete Hatchable project. Everything the app needs is in these files: pages, API routes, database migrations, seed data, and the hatchable.toml manifest that declares the services and keys it uses.
+Hosted on Netlify:
 
-## Run your own copy
-
-1. Go to https://hatchable.com/deploy
-2. Bring this folder as a .zip, or point the importer at a Git repository that contains it
-3. Your copy gets its own database, its own URL, and connects to your own keys
-
-## About Hatchable
-
-Hatchable is where AI-built apps go live. Connect the AI you already use and it can build, deploy, and run apps like this one for you.
-
-Built on Hatchable. https://hatchable.com
+- `public/` holds the static site that Netlify publishes.
+- `netlify/functions/` holds the `/api/*` endpoints.
+- `db/schema.ts` and `netlify/database/migrations/` define the Netlify Database (Postgres). Migrations are applied automatically on deploy.
+- `/admin/` is protected by Netlify Identity. Only users with the `admin` role can use it.

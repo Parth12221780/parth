@@ -1,4 +1,5 @@
 (()=>{
+if(/(invite|recovery|confirmation)_token=/.test(location.hash)&&!location.pathname.startsWith("/admin")){location.replace("/admin/"+location.hash);return;}
 async function initSiteSettings(){
  try{
   const r=await fetch('/api/settings');const s=await r.json();
