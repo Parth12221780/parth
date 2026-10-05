@@ -1387,3 +1387,57 @@ main.has-site-background .chart-info-card{
   .prize-machine-shell.machine::before,
   .prize-machine-shell.machine::after{animation:none}
 }
+
+/* Restore the pre-LED Result Machine appearance. */
+.prize-machine-shell.machine{
+  position:relative;
+  isolation:auto;
+  overflow:hidden;
+  border:1px solid #354052 !important;
+  border-radius:28px !important;
+  background:linear-gradient(145deg,#151d28,#090d14) !important;
+  box-shadow:var(--shadow) !important;
+}
+.prize-machine-shell.machine::before,
+.prize-machine-shell.machine::after{
+  display:none !important;
+  content:none !important;
+  animation:none !important;
+}
+.prize-machine-shell.machine > .machine-top,
+.prize-machine-shell.machine > .machine-screen,
+.prize-machine-shell.machine > .machine-bottom{
+  position:static;
+  z-index:auto;
+}
+.prize-machine-shell.machine .machine-screen{
+  border-color:#465363;
+  box-shadow:inset 0 0 0 8px #0b1016,inset 0 0 35px rgba(0,0,0,.65),0 18px 45px rgba(0,0,0,.28);
+}
+.home-page .prize-machine-shell.machine{
+  width:min(100%,560px);
+  margin:0 auto;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:24px !important;
+  background:linear-gradient(145deg,#151d28,#090d14) !important;
+  box-shadow:0 24px 55px rgba(0,0,0,.30) !important;
+}
+.home-page .prize-machine-shell .machine-screen{
+  padding:26px 24px 24px !important;
+  border:1px solid #354052 !important;
+  border-radius:20px !important;
+  background:radial-gradient(circle at 50% 0%,rgba(99,230,190,.08),transparent 38%),linear-gradient(145deg,#111923,#090e15) !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 0 35px rgba(0,0,0,.38),0 12px 30px rgba(0,0,0,.20) !important;
+}
+@media(max-width:560px){
+  .home-page .prize-machine-shell.machine{
+    width:100%;
+    padding:9px;
+    border-radius:19px !important;
+  }
+  .home-page .prize-machine-shell .machine-screen{
+    padding:20px 12px 18px !important;
+    border-radius:15px !important;
+  }
+}
