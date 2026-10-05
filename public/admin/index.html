@@ -10,17 +10,55 @@
 <button class="button" id="save">Update Result</button>
 </div>
 <div id="message" class="empty"></div>
+<section class="admin-settings-panel">
+  <div class="section-head"><div><p class="eyebrow">SITE SETTINGS</p><h2>Manage Website</h2></div></div>
+  <div class="admin-settings-grid">
+    <label>WhatsApp Number<input id="whatsapp" type="text" placeholder="8207373406"></label>
+    <label>Telegram Link<input id="telegram" type="url" placeholder="https://t.me/..."></label>
+    <label>Favicon URL<input id="favicon" type="url" placeholder="https://.../favicon.png"></label>
+  </div>
+  <div class="youtube-manager">
+    <div class="youtube-manager-head"><div><strong>YouTube Carousel</strong><span>Add as many YouTube video links as you want. They will appear on all pages.</span></div><button class="button ghost" id="addYoutube" type="button">+ Add Video</button></div>
+    <div id="youtubeInputs"></div>
+  </div>
+  <button class="button" id="saveSettings" type="button">Save Website Settings</button>
+  <div id="settingsMessage" class="chart-status"></div>
+</section>
 <div class="info-strip" id="stats"></div>
 <h2>Recent entries</h2><div id="recent" class="history-box">Loading…</div>
 </main>
 <script>
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>new Date().toISOString().slice(0,10);
+let youtubeLinks=[];
+function renderYoutubeInputs(){
+ const box=document.getElementById('youtubeInputs');
+ box.innerHTML=youtubeLinks.map((url,i)=>'<div class="youtube-input-row"><span>#'+(i+1)+'</span><input class="yt-url" type="url" data-index="'+i+'" value="'+esc(url)+'" placeholder="https://www.youtube.com/watch?v=..."><button type="button" class="button ghost remove-youtube" data-index="'+i+'">Remove</button></div>').join('');
+ document.querySelectorAll('.yt-url').forEach(el=>el.addEventListener('input',()=>youtubeLinks[Number(el.dataset.index)]=el.value));
+ document.querySelectorAll('.remove-youtube').forEach(el=>el.addEventListener('click',()=>{youtubeLinks.splice(Number(el.dataset.index),1);renderYoutubeInputs();}));
+}
+async function loadSettings(){
+ const r=await fetch('/api/admin/settings'); const s=await r.json();
+ document.getElementById('whatsapp').value=s.whatsapp_number||'';
+ document.getElementById('telegram').value=s.telegram_link||'';
+ document.getElementById('favicon').value=s.favicon_url||'';
+ youtubeLinks=Array.isArray(s.youtube_links)?s.youtube_links:[];
+ renderYoutubeInputs();
+}
+document.getElementById('addYoutube').onclick=()=>{youtubeLinks.push('');renderYoutubeInputs();};
+document.getElementById('saveSettings').onclick=async()=>{
+ const btn=document.getElementById('saveSettings');btn.disabled=true;btn.textContent='Saving…';
+ const links=[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean);
+ const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_url:document.getElementById('favicon').value.trim(),youtube_links:links})});
+ const data=await res.json();const msg=document.getElementById('settingsMessage');msg.textContent=res.ok?'Website settings saved successfully.':(data.error||'Could not save settings.');
+ youtubeLinks=links;renderYoutubeInputs();btn.disabled=false;btn.textContent='Save Website Settings';
+};
 async function init(){
  const games=await (await fetch('/api/admin/games')).json();
  document.getElementById('game').innerHTML=(games.games||games||[]).map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('');
  document.getElementById('date').value=today();
  document.getElementById('time').value=new Date().toTimeString().slice(0,5);
+ await loadSettings();
  await refresh();
 }
 async function refresh(){
