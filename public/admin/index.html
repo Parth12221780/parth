@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — Number Results Portal</title><link rel="stylesheet" href="/styles.css"></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — Number Results Portal</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/admin-seo.css"></head>
 <body><header class="site-header"><div class="wrap nav"><a class="brand" href="/">SattaKing<span>UP1</span> ADMIN</a><nav><a href="/">View Site</a><a href="/history.html">History</a></nav></div></header>
 <main class="wrap page"><p class="eyebrow">ADMIN DASHBOARD</p><h1>Central Result Update</h1><p class="page-intro">Enter one new result when it arrives. The central machine will show the latest updated result, while the selected game's history keeps the new entry.</p>
 <div class="filters" style="align-items:end">
@@ -32,6 +32,26 @@
   <button class="button" id="saveSettings" type="button">Save Website Settings</button>
   <div id="settingsMessage" class="chart-status"></div>
 </section>
+<section class="admin-seo-panel">
+  <div class="admin-seo-head">
+    <div><p class="eyebrow">SEO MANAGEMENT</p><h2>Page SEO Settings</h2><p class="page-intro">Manage SEO metadata separately for every public page. Save now and update it anytime in the future.</p></div>
+    <label class="seo-page-select">Select Page<select id="seoPage"></select></label>
+  </div>
+  <div class="admin-seo-grid">
+    <label class="seo-full">SEO Title <span class="seo-counter" id="seoTitleCount"></span><input id="seoTitle" maxlength="180" placeholder="Example: Ghaziabad Results 2026 — Latest & Historical Results"></label>
+    <label>Meta Description <span class="seo-counter" id="seoDescCount"></span><textarea id="seoDescription" maxlength="320" placeholder="Write a useful, page-specific search description."></textarea></label>
+    <label>Canonical URL<input id="seoCanonical" type="url" placeholder="https://example.com/games/ghaziabad/"></label>
+    <label>Open Graph Title<input id="seoOgTitle" maxlength="180" placeholder="Social sharing title"></label>
+    <label>Open Graph Description<textarea id="seoOgDescription" maxlength="320" placeholder="Social sharing description"></textarea></label>
+    <label>Open Graph Image URL<input id="seoOgImage" type="url" placeholder="https://example.com/images/seo/ghaziabad.jpg"></label>
+    <label>Robots<select id="seoRobots"><option value="index,follow">index, follow</option><option value="noindex,follow">noindex, follow</option><option value="index,nofollow">index, nofollow</option><option value="noindex,nofollow">noindex, nofollow</option></select></label>
+    <label>Focus Keyword<input id="seoFocusKeyword" maxlength="120" placeholder="Main keyword for this page"></label>
+    <label class="seo-full">Secondary Keywords / SEO Notes<textarea id="seoKeywords" maxlength="2000" placeholder="Comma-separated supporting keywords or internal SEO notes."></textarea></label>
+    <label class="seo-full">Structured Data JSON-LD <span class="seo-counter">Optional — paste valid JSON only</span><textarea id="seoSchema" maxlength="12000" placeholder='{"@context":"https://schema.org","@type":"WebPage","name":"..."}'></textarea></label>
+  </div>
+  <span class="seo-help">Title, description, canonical, robots, Open Graph and optional JSON-LD are applied to the selected page when saved. Keep metadata relevant to the actual page content; structured data should describe visible page content and be validated before relying on it.</span>
+  <div class="seo-actions"><button class="button" id="saveSeo" type="button">Save Page SEO</button><button class="button ghost" id="clearSeo" type="button">Clear Saved SEO</button><span id="seoMessage" class="seo-status"></span></div>
+</section>
 <div class="info-strip" id="stats"></div>
 <h2>Recent entries</h2><div id="recent" class="history-box">Loading…</div>
 </main>
@@ -40,6 +60,45 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const today=()=>new Date().toISOString().slice(0,10);
 let youtubeLinks=[];
 let backgroundData="";
+let seoPages={};
+const seoPageOptions=[
+ {path:"/",label:"Home"},
+ {path:"/history.html",label:"History"},
+ {path:"/about.html",label:"About"},
+ {path:"/disclaimer.html",label:"Disclaimer"},
+ {path:"/games/desawar/",label:"Desawar"},
+ {path:"/games/delhi-bazar/",label:"Delhi Bazar"},
+ {path:"/games/shree-ganesh/",label:"Shree Ganesh"},
+ {path:"/games/faridabad/",label:"Faridabad"},
+ {path:"/games/up-1/",label:"UP 1"},
+ {path:"/games/ghaziabad/",label:"Ghaziabad"},
+ {path:"/games/delhi-1/",label:"Delhi 1"},
+ {path:"/games/gali/",label:"Gali"}
+];
+const seoDefaults=()=>({title:"",description:"",canonical:"",og_title:"",og_description:"",og_image:"",robots:"index,follow",focus_keyword:"",keywords:"",schema_json:""});
+function loadSeoForm(){
+ const key=document.getElementById('seoPage').value, x=Object.assign(seoDefaults(),seoPages[key]||{});
+ document.getElementById('seoTitle').value=x.title;document.getElementById('seoDescription').value=x.description;
+ document.getElementById('seoCanonical').value=x.canonical;document.getElementById('seoOgTitle').value=x.og_title;
+ document.getElementById('seoOgDescription').value=x.og_description;document.getElementById('seoOgImage').value=x.og_image;
+ document.getElementById('seoRobots').value=x.robots||'index,follow';document.getElementById('seoFocusKeyword').value=x.focus_keyword;
+ document.getElementById('seoKeywords').value=x.keywords;document.getElementById('seoSchema').value=x.schema_json;
+ updateSeoCounts();
+}
+function updateSeoCounts(){
+ document.getElementById('seoTitleCount').textContent=document.getElementById('seoTitle').value.length+'/180';
+ document.getElementById('seoDescCount').textContent=document.getElementById('seoDescription').value.length+'/320';
+}
+function renderSeoPages(){
+ document.getElementById('seoPage').innerHTML=seoPageOptions.map(x=>'<option value="'+esc(x.path)+'">'+esc(x.label)+' — '+esc(x.path)+'</option>').join('');
+ loadSeoForm();
+}
+async function saveAllSettings(extra={}){
+ const links=[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean);
+ const payload={whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:backgroundData,youtube_links:links,seo_pages:seoPages,...extra};
+ const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+ return {res,data:await res.json()};
+}
 document.getElementById('backgroundFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2000000){document.getElementById('backgroundName').textContent='File too large — keep it under 2 MB.';e.target.value='';return;}if(!/^image\/(png|jpeg|webp|svg\+xml)$/i.test(file.type)&&!/\.(png|jpg|jpeg|webp|svg)$/i.test(file.name)){document.getElementById('backgroundName').textContent='Please choose PNG, JPG, JPEG, WEBP or SVG.';e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{backgroundData=String(reader.result||'');document.getElementById('backgroundName').textContent=file.name+' • ready to save';};reader.readAsDataURL(file);});
 let faviconData="";
 document.getElementById('faviconFile').addEventListener('change',e=>{
@@ -66,7 +125,9 @@ async function loadSettings(){
  if(s.background_data)document.getElementById('backgroundName').textContent='Current background is saved. Choose a new image to replace it.';
  if(s.favicon_url)document.getElementById('faviconName').textContent='Current favicon is saved. Choose a new file to replace it.';
  youtubeLinks=Array.isArray(s.youtube_links)?s.youtube_links:[];
+ seoPages=s.seo_pages&&typeof s.seo_pages==="object"&&!Array.isArray(s.seo_pages)?s.seo_pages:{};
  renderYoutubeInputs();
+ renderSeoPages();
 }
 document.getElementById('addYoutube').onclick=()=>{youtubeLinks.push('');renderYoutubeInputs();};
 document.getElementById('removeBackground').onclick=async()=>{const btn=document.getElementById('removeBackground');btn.disabled=true;btn.textContent='Removing…';const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:'',youtube_links:[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean)})});if(res.ok){backgroundData='';document.getElementById('backgroundFile').value='';document.getElementById('backgroundName').textContent='No background saved.';}btn.disabled=false;btn.textContent='Remove Background';};
@@ -83,6 +144,22 @@ document.getElementById('saveSettings').onclick=async()=>{
  const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:backgroundData,youtube_links:links})});
  const data=await res.json();const msg=document.getElementById('settingsMessage');msg.textContent=res.ok?'Website settings saved successfully.':(data.error||'Could not save settings.');
  youtubeLinks=links;renderYoutubeInputs();btn.disabled=false;btn.textContent='Save Website Settings';
+};
+document.getElementById('seoPage').addEventListener('change',loadSeoForm);
+['seoTitle','seoDescription'].forEach(id=>document.getElementById(id).addEventListener('input',updateSeoCounts));
+document.getElementById('saveSeo').onclick=async()=>{
+ const btn=document.getElementById('saveSeo'),msg=document.getElementById('seoMessage'),key=document.getElementById('seoPage').value;
+ let schema=document.getElementById('seoSchema').value.trim();
+ if(schema){try{JSON.parse(schema);}catch{msg.textContent='Structured Data JSON-LD is not valid JSON.';return;}}
+ seoPages[key]={title:document.getElementById('seoTitle').value.trim(),description:document.getElementById('seoDescription').value.trim(),canonical:document.getElementById('seoCanonical').value.trim(),og_title:document.getElementById('seoOgTitle').value.trim(),og_description:document.getElementById('seoOgDescription').value.trim(),og_image:document.getElementById('seoOgImage').value.trim(),robots:document.getElementById('seoRobots').value,focus_keyword:document.getElementById('seoFocusKeyword').value.trim(),keywords:document.getElementById('seoKeywords').value.trim(),schema_json:schema};
+ btn.disabled=true;btn.textContent='Saving…';
+ const {res,data}=await saveAllSettings();
+ msg.textContent=res.ok?'SEO saved for '+key+'.':(data.error||'Could not save SEO.');
+ btn.disabled=false;btn.textContent='Save Page SEO';
+};
+document.getElementById('clearSeo').onclick=async()=>{
+ const key=document.getElementById('seoPage').value;if(!confirm('Clear saved SEO for '+key+'?'))return;
+ delete seoPages[key];const {res,data}=await saveAllSettings();document.getElementById('seoMessage').textContent=res.ok?'Saved SEO cleared for '+key+'.':(data.error||'Could not clear SEO.');loadSeoForm();
 };
 async function init(){
  const games=await (await fetch('/api/admin/games')).json();

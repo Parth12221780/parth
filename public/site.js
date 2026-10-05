@@ -14,8 +14,41 @@ async function initSiteSettings(){
     if(n)a.href='https://wa.me/'+(n.startsWith('91')?n:'91'+n);
   });
   document.querySelectorAll('.telegram-btn').forEach(a=>{if(s.telegram_link)a.href=s.telegram_link;});
+  applyPageSeo(s.seo_pages||{});
   renderYoutubeCarousel(Array.isArray(s.youtube_links)?s.youtube_links:[]);
  }catch(e){}
+}
+function applyPageSeo(seoPages){
+ const key=location.pathname==="/"?"/":(location.pathname.endsWith("/")?location.pathname:location.pathname);
+ const x=seoPages&&seoPages[key]; if(!x)return;
+ const setMeta=(name,content,attr="name")=>{
+  if(!content)return;
+  let el=document.head.querySelector('meta['+attr+'="'+name+'"]');
+  if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+  el.setAttribute('content',content);
+ };
+ if(x.title)document.title=x.title;
+ setMeta("description",x.description);
+ setMeta("robots",x.robots||"index,follow");
+ setMeta("keywords",x.keywords);
+ setMeta("og:title",x.og_title||x.title,"property");
+ setMeta("og:description",x.og_description||x.description,"property");
+ setMeta("og:image",x.og_image,"property");
+ setMeta("og:url",x.canonical||location.href,"property");
+ setMeta("og:type","website","property");
+ if(x.canonical){
+  let link=document.head.querySelector('link[rel="canonical"]');
+  if(!link){link=document.createElement('link');link.rel="canonical";document.head.appendChild(link);}
+  link.href=x.canonical;
+ }
+ if(x.schema_json){
+  try{
+   const data=JSON.parse(x.schema_json);
+   let script=document.getElementById("adminSeoSchema");
+   if(!script){script=document.createElement("script");script.id="adminSeoSchema";script.type="application/ld+json";document.head.appendChild(script);}
+   script.textContent=JSON.stringify(data);
+  }catch(e){}
+ }
 }
 function youtubeId(url){
  try{

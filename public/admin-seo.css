@@ -1,0 +1,13 @@
+.admin-seo-panel{margin-top:28px;padding:22px;border:1px solid #2e3a4a;border-radius:18px;background:linear-gradient(145deg,#121a24,#0b1119);box-shadow:0 14px 35px rgba(0,0,0,.18)}
+.admin-seo-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+.admin-seo-head h2{margin:4px 0 0}.admin-seo-head p{margin:0}.seo-page-select{min-width:260px}
+.admin-seo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.admin-seo-grid label{display:flex;flex-direction:column;gap:7px;font-weight:700}
+.admin-seo-grid input,.admin-seo-grid select,.admin-seo-grid textarea{width:100%;padding:11px 12px;border:1px solid #394657;border-radius:10px;background:#0a1018;color:#fff;font:inherit}
+.admin-seo-grid textarea{min-height:90px;resize:vertical}
+.admin-seo-grid .seo-full{grid-column:1/-1}
+.seo-counter{font-size:12px;color:#94a3b8;font-weight:500}
+.seo-help{display:block;margin-top:10px;color:#94a3b8;font-size:12px;line-height:1.5}
+.seo-actions{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.seo-status{color:#9ee6b8;font-size:13px}
+@media(max-width:720px){.admin-seo-head{display:block}.seo-page-select{width:100%;margin-top:12px}.admin-seo-grid{grid-template-columns:1fr}.admin-seo-grid .seo-full{grid-column:auto}}
