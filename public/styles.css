@@ -242,71 +242,110 @@ main.has-site-background::before{
 .prize-machine-shell .machine-top,
 .prize-machine-shell .machine-bottom{display:none}
 .prize-machine-shell .machine-screen{
-  width:min(100%,394px);
-  aspect-ratio:394 / 507;
+  width:min(100%,430px);
+  aspect-ratio:430 / 520;
   min-height:0 !important;
   margin:0 auto !important;
   padding:0 !important;
-  border:0 !important;
-  border-radius:0 !important;
+  border:4px solid #9b6a21 !important;
+  border-radius:34px 34px 26px 26px !important;
   overflow:hidden;
   position:relative;
   display:block !important;
-  background-image:url('/assets/jackpot-machine.webp') !important;
-  background-size:100% 100% !important;
-  background-position:center !important;
-  background-repeat:no-repeat !important;
-  box-shadow:0 18px 45px rgba(0,0,0,.3) !important;
+  background:
+    radial-gradient(circle at 27% 70%,#ff3535 0 3.2%,#b80c16 3.5%,#7a0a10 5%,transparent 5.4%),
+    radial-gradient(circle at 50% 70%,#ff3535 0 3.2%,#b80c16 3.5%,#7a0a10 5%,transparent 5.4%),
+    radial-gradient(circle at 73% 70%,#ff3535 0 3.2%,#b80c16 3.5%,#7a0a10 5%,transparent 5.4%),
+    radial-gradient(circle at 50% 16%,rgba(255,255,255,.22),transparent 15%),
+    linear-gradient(180deg,#aeb5bc 0%,#5e6870 19%,#232a30 20%,#11171c 70%,#343d44 71%,#12171c 100%) !important;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.22),inset 0 -30px 40px rgba(0,0,0,.55),0 22px 45px rgba(0,0,0,.42) !important;
 }
-.prize-machine-shell .machine-screen:before,
-.prize-machine-shell .machine-screen:after{content:none !important}
+.prize-machine-shell .machine-screen:before{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:29%;
+  height:27%;
+  border:7px solid #090b0d;
+  border-radius:18px;
+  background:linear-gradient(180deg,#090a0c,#1c2227);
+  box-shadow:inset 0 0 0 4px #d9dce0,0 8px 15px rgba(0,0,0,.45);
+  z-index:0;
+}
+.prize-machine-shell .machine-screen:after{
+  content:"";
+  position:absolute;
+  left:11%;
+  right:11%;
+  bottom:8%;
+  height:5%;
+  border-radius:20px;
+  background:linear-gradient(180deg,#07090b,#252c31,#050607);
+  border:3px solid #d09a32;
+  box-shadow:0 0 12px rgba(255,193,55,.35);
+  z-index:0;
+}
 .prize-machine-shell .machine-game{
   position:absolute;
-  left:14%;
-  right:14%;
-  top:15%;
+  left:11%;
+  right:11%;
+  top:8%;
   min-width:0;
   margin:0;
-  padding:5px 8px;
-  border:0;
-  background:transparent;
-  color:#f7d22c;
+  padding:13px 18px;
+  border:4px solid #ffd75a;
+  border-radius:22px;
+  background:linear-gradient(180deg,#ff2b2b 0%,#c90012 52%,#7e0009 100%);
+  color:#fff1a6;
   font-family:Arial,sans-serif;
-  font-size:clamp(19px,4.6vw,32px);
+  font-size:clamp(19px,4.6vw,31px);
   line-height:1;
   font-weight:950;
   letter-spacing:.01em;
   text-transform:uppercase;
-  text-shadow:2px 2px 0 #9b5b00,0 0 3px #fff;
+  text-shadow:2px 3px 0 #7d0000,0 0 8px rgba(255,241,166,.65);
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  box-shadow:none;
-  z-index:2;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.28),0 5px 14px rgba(0,0,0,.45);
+  z-index:3;
 }
 @keyframes gameNameBreathe{0%,100%{filter:brightness(1);text-shadow:2px 2px 0 #9b5b00,0 0 3px #fff}50%{filter:brightness(1.18);text-shadow:2px 2px 0 #9b5b00,0 0 10px rgba(255,224,88,.95)}}
 .prize-machine-shell .machine-game{animation:gameNameBreathe 2.8s ease-in-out infinite}
 .prize-machine-shell .machine-number{
   position:absolute;
-  left:28%;
-  right:28%;
-  top:42%;
+  left:12%;
+  right:12%;
+  top:34%;
   min-height:0;
+  height:24%;
   margin:0;
   display:flex;
-  align-items:center;
+  align-items:stretch;
   justify-content:center;
-  color:#d61d25;
+  gap:7px;
+  color:#d10b16;
   font-family:Georgia,serif;
   font-style:italic;
   font-weight:950;
-  font-size:clamp(58px,13vw,100px);
-  line-height:.9;
-  letter-spacing:.06em;
-  text-shadow:1px 2px 0 #fff,2px 3px 0 rgba(0,0,0,.25);
+  font-size:clamp(55px,12vw,92px);
+  line-height:1;
+  letter-spacing:0;
+  text-shadow:2px 3px 0 #fff,3px 4px 0 rgba(0,0,0,.3);
   z-index:2;
 }
-.prize-machine-shell .machine-number span{display:inline-flex;width:30%;align-items:center;justify-content:center}
+.prize-machine-shell .machine-number span{
+  display:flex;
+  flex:1 1 0;
+  width:auto;
+  align-items:center;
+  justify-content:center;
+  border:2px solid #c7c7c7;
+  border-radius:8px;
+  background:linear-gradient(180deg,#fff 0%,#f5f5f5 52%,#c8c8c8 100%);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.18),0 2px 0 #111;
+}
 .prize-machine-shell .machine-number.empty-number span{color:#7d8791}
 .prize-machine-shell .machine-number.empty-number{
   color:#7d8791;
