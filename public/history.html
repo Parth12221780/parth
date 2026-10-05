@@ -78,13 +78,18 @@ async function load(){
  html+='</tbody></table>';
 
  let mobileHtml='<div class="database-history-mobile">';
- dates.forEach(date=>{
-   mobileHtml+='<section class="history-mobile-day"><div class="history-mobile-date">'+fmt(date)+'</div><div class="history-mobile-grid">';
-   selectedGames.forEach(g=>{
-     const v=map[date][g.slug];
-     mobileHtml+='<div class="history-mobile-item"><span>'+esc(g.name)+'</span><strong>'+(v?esc(v):'<em>—</em>')+'</strong></div>';
+ const historyGroups=selectedGames.length===8?[selectedGames.slice(0,4),selectedGames.slice(4,8)]:[selectedGames];
+ historyGroups.forEach(group=>{
+   mobileHtml+='<div class="history-mobile-table-wrap"><table class="database-history-mobile-table"><thead><tr><th>Date</th>'+group.map(g=>'<th>'+esc(g.name)+'</th>').join('')+'</tr></thead><tbody>';
+   dates.forEach(date=>{
+     mobileHtml+='<tr><th>'+fmt(date)+'</th>';
+     group.forEach(g=>{
+       const v=map[date][g.slug];
+       mobileHtml+='<td>'+(v?esc(v):'<span class="missing">—</span>')+'</td>';
+     });
+     mobileHtml+='</tr>';
    });
-   mobileHtml+='</div></section>';
+   mobileHtml+='</tbody></table></div>';
  });
  mobileHtml+='</div>';
  html+=mobileHtml;

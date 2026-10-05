@@ -58,7 +58,11 @@
   <div><p class="eyebrow">MONTHLY ARCHIVE</p><h2 id="monthTitle">Monthly Results</h2></div>
   <div class="month-controls"><button class="button ghost" id="prevMonth" type="button">← Previous</button><button class="button ghost" id="nextMonth" type="button">Next →</button></div>
 </div>
-<div class="monthly-scroll"><table class="monthly-chart"><thead><tr><th>Date</th><th>Desawar</th><th>Delhi Bazar</th><th>Shree Ganesh</th><th>Faridabad</th><th>UP 1</th><th>Ghaziabad</th><th>Delhi 1</th><th>Gali</th></tr></thead><tbody id="monthlyBody"><tr><td colspan="9" class="loading">Loading monthly results…</td></tr></tbody></table></div>
+<div class="monthly-scroll desktop-monthly-chart"><table class="monthly-chart"><thead><tr><th>Date</th><th>Desawar</th><th>Delhi Bazar</th><th>Shree Ganesh</th><th>Faridabad</th><th>UP 1</th><th>Ghaziabad</th><th>Delhi 1</th><th>Gali</th></tr></thead><tbody id="monthlyBody"><tr><td colspan="9" class="loading">Loading monthly results…</td></tr></tbody></table></div>
+<div class="mobile-monthly-charts">
+  <div class="mobile-monthly-table-wrap"><table class="monthly-chart"><thead><tr><th>Date</th><th>Desawar</th><th>Delhi Bazar</th><th>Shree Ganesh</th><th>Faridabad</th></tr></thead><tbody id="monthlyBodyA"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody></table></div>
+  <div class="mobile-monthly-table-wrap"><table class="monthly-chart"><thead><tr><th>Date</th><th>UP 1</th><th>Ghaziabad</th><th>Delhi 1</th><th>Gali</th></tr></thead><tbody id="monthlyBodyB"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody></table></div>
+</div>
 <div id="monthlyStatus" class="chart-status"></div>
 </section>
 <section class="wrap info-strip"><div><strong>One update at a time</strong><span>Each game changes only when its own new result is entered.</span></div><div><strong>History stays safe</strong><span>Older results remain available in the History section.</span></div></section>
@@ -123,6 +127,19 @@ async function loadMonthly(){
    html+='</tr>';
  }
  document.getElementById('monthlyBody').innerHTML=html;
+
+ const mobileGroups=[GAME_SLUGS.slice(0,4),GAME_SLUGS.slice(4,8)];
+ mobileGroups.forEach((group,index)=>{
+   let mobileHtml='';
+   for(let d=1;d<=days;d++){
+     mobileHtml+='<tr><th>'+d+' '+new Date(y,m-1,d).toLocaleDateString('en-IN',{weekday:'short'})+'</th>';
+     group.forEach(slug=>{
+       mobileHtml+='<td>'+(map[d]?.[slug]?esc(map[d][slug]):'<span class="missing">—</span>')+'</td>';
+     });
+     mobileHtml+='</tr>';
+   }
+   document.getElementById(index===0?'monthlyBodyA':'monthlyBodyB').innerHTML=mobileHtml;
+ });
  document.getElementById('monthlyStatus').textContent=data.results.length?data.results.length+' recorded results in '+monthLabel(monthlyDate)+'.':'No results recorded in '+monthLabel(monthlyDate)+' yet.';
 }
 document.getElementById('prevMonth').addEventListener('click',()=>{monthlyDate.setMonth(monthlyDate.getMonth()-1);loadMonthly();});

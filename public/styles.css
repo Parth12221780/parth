@@ -439,59 +439,71 @@ main.has-site-background::before{
     text-overflow:ellipsis;
   }
 
-  /* Mobile history: 4 games on the first row and 4 on the second row for every date. */
-  .database-history{display:none}
-  .database-history-mobile{display:block}
-  .history-mobile-day{
-    border:1px solid var(--line);
-    border-radius:14px;
+  /* Mobile: two separate 4-game tables. No horizontal scrolling. */
+  .desktop-monthly-chart{display:none}
+  .mobile-monthly-charts{display:flex;flex-direction:column;gap:12px}
+  .mobile-monthly-table-wrap{
+    width:100%;
     overflow:hidden;
-    margin-bottom:10px;
-    background:#0b1017;
+    border-radius:12px;
   }
-  .history-mobile-date{
-    padding:9px 10px;
-    background:#123d68;
-    color:#fff;
+  .mobile-monthly-table-wrap .monthly-chart{
+    width:100%;
+    table-layout:fixed;
+  }
+  .mobile-monthly-table-wrap .monthly-chart th,
+  .mobile-monthly-table-wrap .monthly-chart td{
+    padding:9px 3px;
+    font-size:11px;
+    white-space:nowrap;
+    text-align:center;
+  }
+  .mobile-monthly-table-wrap .monthly-chart th:first-child,
+  .mobile-monthly-table-wrap .monthly-chart td:first-child{
+    width:19%;
+  }
+  .mobile-monthly-table-wrap .monthly-chart th:not(:first-child),
+  .mobile-monthly-table-wrap .monthly-chart td:not(:first-child){
+    width:20.25%;
+  }
+
+  .database-history{display:none}
+  .database-history-mobile{display:flex;flex-direction:column;gap:12px}
+  .history-mobile-table-wrap{
+    width:100%;
+    overflow:hidden;
+    border-radius:12px;
+  }
+  .database-history-mobile-table{
+    width:100%;
+    table-layout:fixed;
+    border-collapse:collapse;
+  }
+  .database-history-mobile-table th,
+  .database-history-mobile-table td{
+    padding:9px 3px;
     text-align:center;
     font-size:11px;
+    border:1px solid var(--line);
+  }
+  .database-history-mobile-table thead th{
+    background:#07507f;
+    color:#fff;
     font-weight:850;
   }
-  .history-mobile-grid{
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-  }
-  .history-mobile-item{
-    min-width:0;
-    min-height:58px;
-    padding:7px 3px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:3px;
-    border-top:1px solid var(--line);
-    border-right:1px solid var(--line);
-  }
-  .history-mobile-item:nth-child(4n){border-right:0}
-  .history-mobile-item span{
-    width:100%;
-    color:var(--muted);
-    font-size:8px;
-    line-height:1.15;
-    text-align:center;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .history-mobile-item strong{
+  .database-history-mobile-table tbody th{
+    background:#07507f;
     color:#fff;
-    font-size:18px;
-    line-height:1;
+    font-weight:750;
+    width:19%;
   }
-  .history-mobile-item em{
+  .database-history-mobile-table td{
+    background:#eef1f4;
+    color:#18212b;
+    font-weight:650;
+  }
+  .database-history-mobile-table td .missing{
     color:#7d8792;
-    font-style:normal;
     font-weight:500;
   }
 
@@ -499,5 +511,6 @@ main.has-site-background::before{
   .social-btn{flex:1;min-width:0}
 }
 @media(min-width:561px){
+  .mobile-monthly-charts{display:none}
   .database-history-mobile{display:none}
 }
