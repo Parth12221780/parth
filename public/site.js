@@ -15,8 +15,53 @@ async function initSiteSettings(){
   });
   document.querySelectorAll('.telegram-btn').forEach(a=>{if(s.telegram_link)a.href=s.telegram_link;});
   applyPageSeo(s.seo_pages||{});
+  applyMarketingIntegrations(s.integration_config||{});
   renderYoutubeCarousel(Array.isArray(s.youtube_links)?s.youtube_links:[]);
  }catch(e){}
+}
+function addMeta(name,content,attr="name"){
+ if(!content)return;
+ let el=document.head.querySelector('meta['+attr+'="'+name+'"]');
+ if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+ el.setAttribute('content',content);
+}
+function addExternalScript(id,src,attrs={}){
+ if(document.getElementById(id))return;
+ const s=document.createElement('script');s.id=id;s.src=src;s.async=true;
+ Object.entries(attrs).forEach(([k,v])=>s.setAttribute(k,v));
+ document.head.appendChild(s);
+}
+function applyMarketingIntegrations(c){
+ const x=c||{};
+ if(x.google_verification)addMeta("google-site-verification",x.google_verification);
+ if(x.meta_domain_verification)addMeta("facebook-domain-verification",x.meta_domain_verification);
+ const ga=x.ga4_measurement_id;
+ const ads=x.google_ads_id;
+ if(ga||ads){
+  if(!window.dataLayer)window.dataLayer=[];
+  window.gtag=window.gtag||function(){window.dataLayer.push(arguments);};
+  addExternalScript("googleGtag","https://www.googletagmanager.com/gtag/js?id="+encodeURIComponent(ga||ads));
+  window.gtag("js",new Date());
+  if(ga)window.gtag("config",ga);
+  if(ads)window.gtag("config",ads);
+ }
+ if(x.gtm_container_id){
+  window.dataLayer=window.dataLayer||[];
+  window.dataLayer.push({"gtm.start":new Date().getTime(),event:"gtm.js"});
+  addExternalScript("googleTagManager","https://www.googletagmanager.com/gtm.js?id="+encodeURIComponent(x.gtm_container_id));
+ }
+ if(x.adsense_publisher_id){
+  addExternalScript("googleAdSense","https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client="+encodeURIComponent(x.adsense_publisher_id),{"crossorigin":"anonymous"});
+ }
+ if(x.meta_pixel_id){
+  if(!window.fbq){
+   const n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments);};
+   n.push=n;n.loaded=true;n.version="2.0";n.queue=[];window._fbq=n;
+  }
+  addExternalScript("metaPixel","https://connect.facebook.net/en_US/fbevents.js");
+  window.fbq("init",x.meta_pixel_id);
+  window.fbq("track","PageView");
+ }
 }
 function applyPageSeo(seoPages){
  const key=location.pathname==="/"?"/":(location.pathname.endsWith("/")?location.pathname:location.pathname);

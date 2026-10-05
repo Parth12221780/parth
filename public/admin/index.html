@@ -52,6 +52,23 @@
   <span class="seo-help">Title, description, canonical, robots, Open Graph and optional JSON-LD are applied to the selected page when saved. Keep metadata relevant to the actual page content; structured data should describe visible page content and be validated before relying on it.</span>
   <div class="seo-actions"><button class="button" id="saveSeo" type="button">Save Page SEO</button><button class="button ghost" id="clearSeo" type="button">Clear Saved SEO</button><span id="seoMessage" class="seo-status"></span></div>
 </section>
+<section class="admin-integration-panel">
+  <div class="admin-seo-head">
+    <div><p class="eyebrow">GOOGLE + META</p><h2>Analytics & Verification</h2><p class="page-intro">Configure the main Google and Meta website integrations from one place. Only public IDs/verification values are exposed to visitors; private API secrets are intentionally not stored here.</p></div>
+  </div>
+  <div class="admin-seo-grid">
+    <label>Google Search Console Verification Code<input id="googleVerification" maxlength="200" placeholder="Paste only the content value from the HTML-tag method"></label>
+    <label>Google Analytics 4 Measurement ID<input id="ga4MeasurementId" maxlength="50" placeholder="G-XXXXXXXXXX"></label>
+    <label>Google Tag Manager Container ID<input id="gtmContainerId" maxlength="50" placeholder="GTM-XXXXXXX"></label>
+    <label>Google Ads Conversion ID<input id="googleAdsId" maxlength="50" placeholder="AW-XXXXXXXXXX"></label>
+    <label>Google Ads Conversion Label<input id="googleAdsLabel" maxlength="150" placeholder="Conversion label"></label>
+    <label>Google AdSense Publisher ID<input id="adsensePublisherId" maxlength="80" placeholder="ca-pub-XXXXXXXXXXXXXXXX"></label>
+    <label>Meta Pixel ID<input id="metaPixelId" maxlength="80" placeholder="123456789012345"></label>
+    <label>Meta Domain Verification Code<input id="metaDomainVerification" maxlength="200" placeholder="Paste the Meta verification code"></label>
+  </div>
+  <div class="seo-help">GA4 automatically records page views when the Google tag loads. GTM can be used for additional Google/Meta tags and events. Keep Meta Conversions API access tokens, Google API secrets and other private credentials out of this panel; those belong in secure server-side secrets.</div>
+  <div class="seo-actions"><button class="button" id="saveIntegrations" type="button">Save Google + Meta Settings</button><span id="integrationMessage" class="seo-status"></span></div>
+</section>
 <div class="info-strip" id="stats"></div>
 <h2>Recent entries</h2><div id="recent" class="history-box">Loading…</div>
 </main>
@@ -61,6 +78,19 @@ const today=()=>new Date().toISOString().slice(0,10);
 let youtubeLinks=[];
 let backgroundData="";
 let seoPages={};
+let integrationConfig={};
+const integrationFields=['google_verification','ga4_measurement_id','gtm_container_id','google_ads_id','google_ads_label','adsense_publisher_id','meta_pixel_id','meta_domain_verification'];
+function loadIntegrationForm(){
+ const x=integrationConfig||{};
+ document.getElementById('googleVerification').value=x.google_verification||'';
+ document.getElementById('ga4MeasurementId').value=x.ga4_measurement_id||'';
+ document.getElementById('gtmContainerId').value=x.gtm_container_id||'';
+ document.getElementById('googleAdsId').value=x.google_ads_id||'';
+ document.getElementById('googleAdsLabel').value=x.google_ads_label||'';
+ document.getElementById('adsensePublisherId').value=x.adsense_publisher_id||'';
+ document.getElementById('metaPixelId').value=x.meta_pixel_id||'';
+ document.getElementById('metaDomainVerification').value=x.meta_domain_verification||'';
+}
 const seoPageOptions=[
  {path:"/",label:"Home"},
  {path:"/history.html",label:"History"},
@@ -95,7 +125,17 @@ function renderSeoPages(){
 }
 async function saveAllSettings(extra={}){
  const links=[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean);
- const payload={whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:backgroundData,youtube_links:links,seo_pages:seoPages,...extra};
+ const integrations={
+  google_verification:document.getElementById('googleVerification').value.trim(),
+  ga4_measurement_id:document.getElementById('ga4MeasurementId').value.trim(),
+  gtm_container_id:document.getElementById('gtmContainerId').value.trim(),
+  google_ads_id:document.getElementById('googleAdsId').value.trim(),
+  google_ads_label:document.getElementById('googleAdsLabel').value.trim(),
+  adsense_publisher_id:document.getElementById('adsensePublisherId').value.trim(),
+  meta_pixel_id:document.getElementById('metaPixelId').value.trim(),
+  meta_domain_verification:document.getElementById('metaDomainVerification').value.trim()
+ };
+ const payload={whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:backgroundData,youtube_links:links,seo_pages:seoPages,integration_config:integrations,...extra};
  const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
  return {res,data:await res.json()};
 }
@@ -126,6 +166,8 @@ async function loadSettings(){
  if(s.favicon_url)document.getElementById('faviconName').textContent='Current favicon is saved. Choose a new file to replace it.';
  youtubeLinks=Array.isArray(s.youtube_links)?s.youtube_links:[];
  seoPages=s.seo_pages&&typeof s.seo_pages==="object"&&!Array.isArray(s.seo_pages)?s.seo_pages:{};
+ integrationConfig=s.integration_config&&typeof s.integration_config==="object"&&!Array.isArray(s.integration_config)?s.integration_config:{};
+ loadIntegrationForm();
  renderYoutubeInputs();
  renderSeoPages();
 }
@@ -144,6 +186,23 @@ document.getElementById('saveSettings').onclick=async()=>{
  const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:backgroundData,youtube_links:links})});
  const data=await res.json();const msg=document.getElementById('settingsMessage');msg.textContent=res.ok?'Website settings saved successfully.':(data.error||'Could not save settings.');
  youtubeLinks=links;renderYoutubeInputs();btn.disabled=false;btn.textContent='Save Website Settings';
+};
+document.getElementById('saveIntegrations').onclick=async()=>{
+ const btn=document.getElementById('saveIntegrations'),msg=document.getElementById('integrationMessage');
+ btn.disabled=true;btn.textContent='Saving…';
+ integrationConfig={
+  google_verification:document.getElementById('googleVerification').value.trim(),
+  ga4_measurement_id:document.getElementById('ga4MeasurementId').value.trim(),
+  gtm_container_id:document.getElementById('gtmContainerId').value.trim(),
+  google_ads_id:document.getElementById('googleAdsId').value.trim(),
+  google_ads_label:document.getElementById('googleAdsLabel').value.trim(),
+  adsense_publisher_id:document.getElementById('adsensePublisherId').value.trim(),
+  meta_pixel_id:document.getElementById('metaPixelId').value.trim(),
+  meta_domain_verification:document.getElementById('metaDomainVerification').value.trim()
+ };
+ const {res,data}=await saveAllSettings();
+ msg.textContent=res.ok?'Google + Meta settings saved successfully.':(data.error||'Could not save integration settings.');
+ btn.disabled=false;btn.textContent='Save Google + Meta Settings';
 };
 document.getElementById('seoPage').addEventListener('change',loadSeoForm);
 ['seoTitle','seoDescription'].forEach(id=>document.getElementById(id).addEventListener('input',updateSeoCounts));
