@@ -16,8 +16,8 @@
     <label>WhatsApp Number<input id="whatsapp" type="text" placeholder="8207373406"></label>
     <label>Telegram Link<input id="telegram" type="url" placeholder="https://t.me/..."></label>
     <label>Favicon
-  <input id="faviconFile" type="file" accept=".png,.ico,.svg,image/png,image/x-icon,image/svg+xml">
-  <small id="faviconName" class="settings-help">PNG, ICO or SVG • recommended 32×32 or 48×48</small>
+  <div class="favicon-upload-row"><input id="faviconFile" type="file" accept=".png,.ico,.svg,.jpg,.jpeg,image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml,image/jpeg"><button class="button ghost" id="removeFavicon" type="button">Remove Favicon</button></div>
+  <small id="faviconName" class="settings-help">PNG, ICO, SVG, JPG or JPEG • recommended 32×32 or 48×48</small>
 </label>
 <input id="favicon" type="hidden">
   </div>
@@ -39,7 +39,7 @@ let faviconData="";
 document.getElementById('faviconFile').addEventListener('change',e=>{
  const file=e.target.files?.[0]; if(!file)return;
  if(file.size>500000){document.getElementById('faviconName').textContent='File too large — keep it under 500 KB.';e.target.value='';return;}
- if(!/^image\/(png|x-icon|svg\+xml)$/i.test(file.type) && !/\.(png|ico|svg)$/i.test(file.name)){document.getElementById('faviconName').textContent='Please choose PNG, ICO or SVG.';e.target.value='';return;}
+ if(!/^image\/(png|x-icon|vnd\.microsoft\.icon|svg\+xml|jpeg)$/i.test(file.type) && !/\.(png|ico|svg|jpg|jpeg)$/i.test(file.name)){document.getElementById('faviconName').textContent='Please choose PNG, ICO, SVG, JPG or JPEG.';e.target.value='';return;}
  const reader=new FileReader();
  reader.onload=()=>{faviconData=String(reader.result||'');document.getElementById('faviconName').textContent=file.name+' • ready to save';};
  reader.readAsDataURL(file);
@@ -61,6 +61,13 @@ async function loadSettings(){
  renderYoutubeInputs();
 }
 document.getElementById('addYoutube').onclick=()=>{youtubeLinks.push('');renderYoutubeInputs();};
+document.getElementById('removeFavicon').onclick=async()=>{
+ const btn=document.getElementById('removeFavicon');btn.disabled=true;btn.textContent='Removing…';
+ const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:'',youtube_links:[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean)})});
+ if(res.ok){faviconData='';document.getElementById('favicon').value='';document.getElementById('faviconFile').value='';document.getElementById('faviconName').textContent='No favicon saved.';}
+ else document.getElementById('settingsMessage').textContent='Could not remove favicon.';
+ btn.disabled=false;btn.textContent='Remove Favicon';
+};
 document.getElementById('saveSettings').onclick=async()=>{
  const btn=document.getElementById('saveSettings');btn.disabled=true;btn.textContent='Saving…';
  const links=[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean);
