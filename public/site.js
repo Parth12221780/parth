@@ -6,12 +6,8 @@ async function initSiteSettings(){
   if(fav&&s.favicon_url)fav.href=s.favicon_url;
   if(s.background_data){
    const bgTarget=document.querySelector('main')||document.body;
-   bgTarget.style.backgroundImage='url("'+s.background_data+'")';
-   bgTarget.style.backgroundAttachment='fixed';
-   bgTarget.style.backgroundSize='cover';
-   bgTarget.style.backgroundPosition='center center';
-   bgTarget.style.backgroundRepeat='no-repeat';
-   bgTarget.style.backgroundColor='transparent';
+   bgTarget.classList.add('has-site-background');
+   bgTarget.style.setProperty('--site-background-image','url("'+s.background_data+'")');
  }
   document.querySelectorAll('.whatsapp-btn').forEach(a=>{
     const n=String(s.whatsapp_number||'').replace(/\\D/g,'');
