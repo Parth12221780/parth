@@ -449,22 +449,24 @@ main.has-site-background::before{
   }
   .mobile-monthly-table-wrap .monthly-chart{
     width:100%;
+    min-width:0 !important;
     table-layout:fixed;
   }
   .mobile-monthly-table-wrap .monthly-chart th,
   .mobile-monthly-table-wrap .monthly-chart td{
-    padding:9px 3px;
+    padding:9px 2px;
     font-size:11px;
     white-space:nowrap;
     text-align:center;
+    overflow:hidden;
   }
   .mobile-monthly-table-wrap .monthly-chart th:first-child,
   .mobile-monthly-table-wrap .monthly-chart td:first-child{
-    width:19%;
+    width:16%;
   }
   .mobile-monthly-table-wrap .monthly-chart th:not(:first-child),
   .mobile-monthly-table-wrap .monthly-chart td:not(:first-child){
-    width:20.25%;
+    width:21%;
   }
 
   .database-history{display:none}
