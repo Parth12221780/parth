@@ -13,6 +13,10 @@
 <section class="admin-settings-panel">
   <div class="section-head"><div><p class="eyebrow">SITE SETTINGS</p><h2>Manage Website</h2></div></div>
   <div class="admin-settings-grid">
+    <label>Website Background
+      <div class="favicon-upload-row"><input id="backgroundFile" type="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml"><button class="button ghost" id="removeBackground" type="button">Remove Background</button></div>
+      <small id="backgroundName" class="settings-help">PNG, JPG, JPEG, WEBP or SVG • used across the entire website</small>
+    </label>
     <label>WhatsApp Number<input id="whatsapp" type="text" placeholder="8207373406"></label>
     <label>Telegram Link<input id="telegram" type="url" placeholder="https://t.me/..."></label>
     <label>Favicon
@@ -35,6 +39,8 @@
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>new Date().toISOString().slice(0,10);
 let youtubeLinks=[];
+let backgroundData="";
+document.getElementById('backgroundFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2000000){document.getElementById('backgroundName').textContent='File too large — keep it under 2 MB.';e.target.value='';return;}if(!/^image\/(png|jpeg|webp|svg\+xml)$/i.test(file.type)&&!/\.(png|jpg|jpeg|webp|svg)$/i.test(file.name)){document.getElementById('backgroundName').textContent='Please choose PNG, JPG, JPEG, WEBP or SVG.';e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{backgroundData=String(reader.result||'');document.getElementById('backgroundName').textContent=file.name+' • ready to save';};reader.readAsDataURL(file);});
 let faviconData="";
 document.getElementById('faviconFile').addEventListener('change',e=>{
  const file=e.target.files?.[0]; if(!file)return;
@@ -56,11 +62,14 @@ async function loadSettings(){
  document.getElementById('telegram').value=s.telegram_link||'';
  document.getElementById('favicon').value=s.favicon_url||'';
  faviconData=s.favicon_url||'';
+ backgroundData=s.background_data||'';
+ if(s.background_data)document.getElementById('backgroundName').textContent='Current background is saved. Choose a new image to replace it.';
  if(s.favicon_url)document.getElementById('faviconName').textContent='Current favicon is saved. Choose a new file to replace it.';
  youtubeLinks=Array.isArray(s.youtube_links)?s.youtube_links:[];
  renderYoutubeInputs();
 }
 document.getElementById('addYoutube').onclick=()=>{youtubeLinks.push('');renderYoutubeInputs();};
+document.getElementById('removeBackground').onclick=async()=>{const btn=document.getElementById('removeBackground');btn.disabled=true;btn.textContent='Removing…';const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:'',youtube_links:[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean)})});if(res.ok){backgroundData='';document.getElementById('backgroundFile').value='';document.getElementById('backgroundName').textContent='No background saved.';}btn.disabled=false;btn.textContent='Remove Background';};
 document.getElementById('removeFavicon').onclick=async()=>{
  const btn=document.getElementById('removeFavicon');btn.disabled=true;btn.textContent='Removing…';
  const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:'',youtube_links:[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean)})});
@@ -71,7 +80,7 @@ document.getElementById('removeFavicon').onclick=async()=>{
 document.getElementById('saveSettings').onclick=async()=>{
  const btn=document.getElementById('saveSettings');btn.disabled=true;btn.textContent='Saving…';
  const links=[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean);
- const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),youtube_links:links})});
+ const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),background_data:backgroundData,youtube_links:links})});
  const data=await res.json();const msg=document.getElementById('settingsMessage');msg.textContent=res.ok?'Website settings saved successfully.':(data.error||'Could not save settings.');
  youtubeLinks=links;renderYoutubeInputs();btn.disabled=false;btn.textContent='Save Website Settings';
 };
