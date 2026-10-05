@@ -388,34 +388,71 @@ main.has-site-background::before{
     font-size:9px;
   }
 }
-/* Result information box — clean, high-contrast and consistent across public pages. */
+/* Top result information box — shared across every public page. */
 .site-result-intro{
   width:min(100% - 36px,1120px);
   margin:12px auto 20px;
-  border:1px solid rgba(210,35,35,.18);
-  border-radius:2px;
-  background:linear-gradient(180deg,#ffffff 0%,#fffafa 100%);
-  box-shadow:0 8px 24px rgba(0,0,0,.10);
+  border:1px solid rgba(190,28,45,.20);
+  border-radius:4px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.98),transparent 55%),
+    linear-gradient(180deg,#fffdfb 0%,#fff7f3 100%);
+  box-shadow:
+    0 8px 24px rgba(54,20,20,.10),
+    0 1px 0 rgba(255,255,255,.95) inset;
   overflow:hidden;
 }
 .site-result-intro-inner{
-  border-top:4px solid #ed0016;
-  padding:9px 18px 10px;
+  border-top:4px solid #d71920;
+  padding:10px 20px 11px;
   text-align:center;
+  position:relative;
 }
+.site-result-intro-inner::before,
+.site-result-intro-inner::after{
+  content:"";
+  position:absolute;
+  top:12px;
+  width:28px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#d71920);
+  opacity:.35;
+}
+.site-result-intro-inner::before{left:12px}
+.site-result-intro-inner::after{right:12px;transform:rotate(180deg)}
 .site-result-intro p{
   margin:0;
-  color:#374151;
+  color:#343a40;
   font-size:13px;
-  line-height:1.5;
+  line-height:1.55;
+  font-weight:500;
 }
 .site-result-intro strong{
-  color:#b40012;
+  color:#a80f1a;
   font-weight:900;
 }
 .site-result-date{
   color:#111827;
-  font-weight:800;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+@media(max-width:560px){
+  .site-result-intro{
+    width:calc(100% - 18px);
+    margin:8px auto 14px;
+  }
+  .site-result-intro-inner{
+    padding:8px 12px 9px;
+  }
+  .site-result-intro-inner::before,
+  .site-result-intro-inner::after{
+    display:none;
+  }
+  .site-result-intro p{
+    font-size:10.5px;
+    line-height:1.5;
+  }
 }
 .social-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 auto 18px;width:min(100% - 30px,1120px)}
 
