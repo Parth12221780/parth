@@ -1,0 +1,56 @@
+/* Home FAQ — compact accordion style matching the supplied reference. */
+.home-faq{
+  width:min(100%,1120px);
+  margin:8px auto 34px;
+}
+.home-faq-title{
+  margin:0 0 8px;
+  text-align:center;
+  color:#111827;
+  font-size:18px;
+  line-height:1.25;
+  font-weight:900;
+}
+.home-faq-list{
+  display:grid;
+  gap:6px;
+}
+.home-faq-item{
+  border:1px solid #d1d5db;
+  border-radius:6px;
+  background:rgba(255,255,255,.94);
+  overflow:hidden;
+}
+.home-faq-item summary{
+  padding:8px 10px;
+  color:#111827;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:850;
+  cursor:pointer;
+  list-style:revert;
+}
+.home-faq-item summary::marker{
+  color:#111827;
+}
+.home-faq-item p{
+  margin:0;
+  padding:0 10px 10px;
+  color:#111827;
+  font-size:12px;
+  line-height:1.5;
+}
+@media(max-width:560px){
+  .home-faq{
+    margin:6px auto 26px;
+  }
+  .home-faq-title{
+    font-size:16px;
+  }
+  .home-faq-item summary{
+    font-size:12px;
+  }
+  .home-faq-item p{
+    font-size:11px;
+  }
+}
