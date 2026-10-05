@@ -224,6 +224,7 @@
  .youtube-card{flex-basis:88vw}
 }
 main.has-site-background{position:relative;z-index:0;background:transparent}
+main.has-site-background > *{position:relative;z-index:1}
 main.has-site-background::before{
   content:"";
   position:fixed;
@@ -231,7 +232,7 @@ main.has-site-background::before{
   left:0;
   right:0;
   bottom:0;
-  z-index:-1;
+  z-index:0;
   background-image:
     linear-gradient(rgba(5,9,16,.12),rgba(5,9,16,.20)),
     var(--site-background-image);
