@@ -15,7 +15,11 @@
   <div class="admin-settings-grid">
     <label>WhatsApp Number<input id="whatsapp" type="text" placeholder="8207373406"></label>
     <label>Telegram Link<input id="telegram" type="url" placeholder="https://t.me/..."></label>
-    <label>Favicon URL<input id="favicon" type="url" placeholder="https://.../favicon.png"></label>
+    <label>Favicon
+  <input id="faviconFile" type="file" accept=".png,.ico,.svg,image/png,image/x-icon,image/svg+xml">
+  <small id="faviconName" class="settings-help">PNG, ICO or SVG • recommended 32×32 or 48×48</small>
+</label>
+<input id="favicon" type="hidden">
   </div>
   <div class="youtube-manager">
     <div class="youtube-manager-head"><div><strong>YouTube Carousel</strong><span>Add as many YouTube video links as you want. They will appear on all pages.</span></div><button class="button ghost" id="addYoutube" type="button">+ Add Video</button></div>
@@ -31,6 +35,15 @@
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>new Date().toISOString().slice(0,10);
 let youtubeLinks=[];
+let faviconData="";
+document.getElementById('faviconFile').addEventListener('change',e=>{
+ const file=e.target.files?.[0]; if(!file)return;
+ if(file.size>500000){document.getElementById('faviconName').textContent='File too large — keep it under 500 KB.';e.target.value='';return;}
+ if(!/^image\/(png|x-icon|svg\+xml)$/i.test(file.type) && !/\.(png|ico|svg)$/i.test(file.name)){document.getElementById('faviconName').textContent='Please choose PNG, ICO or SVG.';e.target.value='';return;}
+ const reader=new FileReader();
+ reader.onload=()=>{faviconData=String(reader.result||'');document.getElementById('faviconName').textContent=file.name+' • ready to save';};
+ reader.readAsDataURL(file);
+});
 function renderYoutubeInputs(){
  const box=document.getElementById('youtubeInputs');
  box.innerHTML=youtubeLinks.map((url,i)=>'<div class="youtube-input-row"><span>#'+(i+1)+'</span><input class="yt-url" type="url" data-index="'+i+'" value="'+esc(url)+'" placeholder="https://www.youtube.com/watch?v=..."><button type="button" class="button ghost remove-youtube" data-index="'+i+'">Remove</button></div>').join('');
@@ -42,6 +55,8 @@ async function loadSettings(){
  document.getElementById('whatsapp').value=s.whatsapp_number||'';
  document.getElementById('telegram').value=s.telegram_link||'';
  document.getElementById('favicon').value=s.favicon_url||'';
+ faviconData=s.favicon_url||'';
+ if(s.favicon_url)document.getElementById('faviconName').textContent='Current favicon is saved. Choose a new file to replace it.';
  youtubeLinks=Array.isArray(s.youtube_links)?s.youtube_links:[];
  renderYoutubeInputs();
 }
@@ -49,7 +64,7 @@ document.getElementById('addYoutube').onclick=()=>{youtubeLinks.push('');renderY
 document.getElementById('saveSettings').onclick=async()=>{
  const btn=document.getElementById('saveSettings');btn.disabled=true;btn.textContent='Saving…';
  const links=[...document.querySelectorAll('.yt-url')].map(x=>x.value.trim()).filter(Boolean);
- const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_url:document.getElementById('favicon').value.trim(),youtube_links:links})});
+ const res=await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp_number:document.getElementById('whatsapp').value.trim(),telegram_link:document.getElementById('telegram').value.trim(),favicon_data:faviconData||document.getElementById('favicon').value.trim(),youtube_links:links})});
  const data=await res.json();const msg=document.getElementById('settingsMessage');msg.textContent=res.ok?'Website settings saved successfully.':(data.error||'Could not save settings.');
  youtubeLinks=links;renderYoutubeInputs();btn.disabled=false;btn.textContent='Save Website Settings';
 };

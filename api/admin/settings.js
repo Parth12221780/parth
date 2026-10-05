@@ -16,7 +16,10 @@ export default async function(req,res){
   const b=req.body||{};
   const wa=String(b.whatsapp_number||"").trim();
   const tg=String(b.telegram_link||"").trim();
-  const fav=String(b.favicon_url||"").trim();
+  const fav=String(b.favicon_data||b.favicon_url||"").trim();
+  if(fav && !/^data:image\/(png|x-icon|vnd.microsoft.icon|svg\+xml);base64,/i.test(fav) && !/^https?:\/\//i.test(fav))
+    return res.status(400).json({error:"Invalid favicon image. Please upload a PNG, ICO or SVG image."});
+  if(fav.length>700000) return res.status(400).json({error:"Favicon file is too large. Please use a smaller image (under about 500 KB)."});
   let yt=Array.isArray(b.youtube_links)?b.youtube_links.map(x=>String(x||"").trim()).filter(Boolean):[];
   yt=yt.slice(0,100);
   for(const [k,v] of [["whatsapp_number",wa],["telegram_link",tg],["favicon_url",fav],["youtube_links",JSON.stringify(yt)]])
