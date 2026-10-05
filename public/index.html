@@ -38,7 +38,7 @@
 <div class="machine-top"><span class="machine-label">LATEST UPDATED RESULT</span><span id="machineTime">—</span></div>
 <div class="machine-screen prize-machine" id="machineScreen">
 <div class="machine-game" id="machineGame">RESULT NOT UPDATED</div>
-<div class="machine-number empty-number" id="machineNumber">—</div>
+<div class="machine-number empty-number" id="machineNumber"><span>0</span><span>0</span><span>0</span></div>
 <div class="machine-date" id="machineDate">No result has been entered yet</div>
 </div>
 <div class="machine-bottom"><span>Central result display</span><span id="machineStatus">Waiting</span></div>
@@ -102,7 +102,7 @@ async function loadBoardAndLatest(){
  showNewResultAlert(row);
  if(row){
    document.getElementById('machineGame').textContent=row.name;
-   document.getElementById('machineNumber').textContent=row.result_value;
+   const mv=String(row.result_value??'').replace(/\\D/g,'').padStart(3,'0').slice(-3); document.getElementById('machineNumber').innerHTML=mv.split('').map(d=>'<span>'+d+'</span>').join('');
    document.getElementById('machineNumber').classList.remove('empty-number');
    document.getElementById('machineDate').textContent=fmtDate(row.result_date)+(row.result_time?' · '+row.result_time:'');
    document.getElementById('machineTime').textContent=row.result_time||'Latest update';

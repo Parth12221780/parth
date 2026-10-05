@@ -284,6 +284,8 @@ main.has-site-background::before{
   box-shadow:none;
   z-index:2;
 }
+@keyframes gameNameBreathe{0%,100%{filter:brightness(1);text-shadow:2px 2px 0 #9b5b00,0 0 3px #fff}50%{filter:brightness(1.18);text-shadow:2px 2px 0 #9b5b00,0 0 10px rgba(255,224,88,.95)}}
+.prize-machine-shell .machine-game{animation:gameNameBreathe 2.8s ease-in-out infinite}
 .prize-machine-shell .machine-number{
   position:absolute;
   left:28%;
@@ -304,6 +306,8 @@ main.has-site-background::before{
   text-shadow:1px 2px 0 #fff,2px 3px 0 rgba(0,0,0,.25);
   z-index:2;
 }
+.prize-machine-shell .machine-number span{display:inline-flex;width:30%;align-items:center;justify-content:center}
+.prize-machine-shell .machine-number.empty-number span{color:#7d8791}
 .prize-machine-shell .machine-number.empty-number{
   color:#7d8791;
   font-size:62px;
