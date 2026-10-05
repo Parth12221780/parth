@@ -76,6 +76,18 @@ async function load(){
  let html='<table class="database-history"><thead><tr><th>Date</th>'+selectedGames.map(g=>'<th>'+esc(g.name)+'</th>').join('')+'</tr></thead><tbody>';
  dates.forEach(date=>{html+='<tr><th>'+fmt(date)+'</th>'+selectedGames.map(g=>{const v=map[date][g.slug];return '<td>'+(v?esc(v):'<span class="missing">—</span>')+'</td>';}).join('')+'</tr>';});
  html+='</tbody></table>';
+
+ let mobileHtml='<div class="database-history-mobile">';
+ dates.forEach(date=>{
+   mobileHtml+='<section class="history-mobile-day"><div class="history-mobile-date">'+fmt(date)+'</div><div class="history-mobile-grid">';
+   selectedGames.forEach(g=>{
+     const v=map[date][g.slug];
+     mobileHtml+='<div class="history-mobile-item"><span>'+esc(g.name)+'</span><strong>'+(v?esc(v):'<em>—</em>')+'</strong></div>';
+   });
+   mobileHtml+='</div></section>';
+ });
+ mobileHtml+='</div>';
+ html+=mobileHtml;
  document.getElementById('history').innerHTML=html;
  document.getElementById('historySummary').textContent=dates.length+' dates · '+data.results.length+' recorded results · '+(m?document.getElementById('month').selectedOptions[0].text:'Full year')+' '+y;
 }

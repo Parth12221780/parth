@@ -415,4 +415,89 @@ main.has-site-background::before{
 .site-result-date{
   color:#111827;
 }
-.social-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 auto 18px;width:min(100% - 30px,1120px)}.social-btn{display:inline-flex;align-items:center;justify-content:center;min-width:125px;padding:10px 18px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:850;border:1px solid var(--line);background:#0e141d;color:#fff;transition:transform .18s ease,background .18s ease}.social-btn:hover{transform:translateY(-1px);background:#151e2a}.whatsapp-btn{border-color:#2f8f55}.telegram-btn{border-color:#2688bd}@media(max-width:560px){.site-result-intro{width:calc(100% - 22px);margin:8px auto 14px}.site-result-intro-inner{padding:8px 11px 9px}.site-result-intro p{font-size:10.5px;line-height:1.5}.game-switcher{top:58px}.game-switcher-inner{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding:7px 0;scrollbar-width:none}.game-switcher-inner::-webkit-scrollbar{display:none}.game-switcher a{min-height:32px;padding:5px 11px;font-size:10px}.social-cta{width:calc(100% - 22px)}.social-btn{flex:1;min-width:0}}
+.social-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 auto 18px;width:min(100% - 30px,1120px)}.social-btn{display:inline-flex;align-items:center;justify-content:center;min-width:125px;padding:10px 18px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:850;border:1px solid var(--line);background:#0e141d;color:#fff;transition:transform .18s ease,background .18s ease}.social-btn:hover{transform:translateY(-1px);background:#151e2a}.whatsapp-btn{border-color:#2f8f55}.telegram-btn{border-color:#2688bd}@media(max-width:560px){
+  .site-result-intro{width:calc(100% - 22px);margin:8px auto 14px}
+  .site-result-intro-inner{padding:8px 11px 9px}
+  .site-result-intro p{font-size:10.5px;line-height:1.5}
+
+  /* Mobile: show all 8 game links as a compact 4 x 2 grid. No horizontal scrolling. */
+  .game-switcher{top:58px}
+  .game-switcher-inner{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:5px;
+    padding:7px 0;
+    overflow:visible;
+  }
+  .game-switcher a{
+    min-height:32px;
+    padding:5px 3px;
+    font-size:9px;
+    line-height:1.1;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* Mobile history: 4 games on the first row and 4 on the second row for every date. */
+  .database-history{display:none}
+  .database-history-mobile{display:block}
+  .history-mobile-day{
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:10px;
+    background:#0b1017;
+  }
+  .history-mobile-date{
+    padding:9px 10px;
+    background:#123d68;
+    color:#fff;
+    text-align:center;
+    font-size:11px;
+    font-weight:850;
+  }
+  .history-mobile-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+  .history-mobile-item{
+    min-width:0;
+    min-height:58px;
+    padding:7px 3px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    border-top:1px solid var(--line);
+    border-right:1px solid var(--line);
+  }
+  .history-mobile-item:nth-child(4n){border-right:0}
+  .history-mobile-item span{
+    width:100%;
+    color:var(--muted);
+    font-size:8px;
+    line-height:1.15;
+    text-align:center;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .history-mobile-item strong{
+    color:#fff;
+    font-size:18px;
+    line-height:1;
+  }
+  .history-mobile-item em{
+    color:#7d8792;
+    font-style:normal;
+    font-weight:500;
+  }
+
+  .social-cta{width:calc(100% - 22px)}
+  .social-btn{flex:1;min-width:0}
+}
+@media(min-width:561px){
+  .database-history-mobile{display:none}
+}
