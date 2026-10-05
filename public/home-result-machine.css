@@ -1,0 +1,167 @@
+/* Home page Result Machine — restored clean/compact modern design. */
+/* This file intentionally scopes every rule to .home-page so game pages are untouched. */
+
+.home-page .prize-machine-shell.machine{
+  width:min(100%,560px);
+  margin:0 auto;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:24px;
+  background:linear-gradient(145deg,#151d28,#090d14);
+  box-shadow:0 24px 55px rgba(0,0,0,.30);
+}
+
+.home-page .prize-machine-shell .machine-top,
+.home-page .prize-machine-shell .machine-bottom{
+  display:flex;
+}
+
+.home-page .prize-machine-shell .machine-screen{
+  width:100%;
+  aspect-ratio:auto;
+  min-height:0 !important;
+  height:auto;
+  margin:8px 0;
+  padding:26px 24px 24px !important;
+  border:1px solid #354052 !important;
+  border-radius:20px !important;
+  overflow:hidden;
+  position:relative;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(99,230,190,.08),transparent 38%),
+    linear-gradient(145deg,#111923,#090e15) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    inset 0 0 35px rgba(0,0,0,.38),
+    0 12px 30px rgba(0,0,0,.20) !important;
+}
+
+.home-page .prize-machine-shell .machine-screen::before,
+.home-page .prize-machine-shell .machine-screen::after{
+  display:none;
+}
+
+.home-page .prize-machine-shell .machine-game{
+  position:static;
+  display:inline-flex;
+  min-width:180px;
+  max-width:90%;
+  margin:0 auto;
+  padding:10px 22px;
+  border:1px solid rgba(99,230,190,.35);
+  border-radius:12px;
+  background:linear-gradient(135deg,#172b31,#101c25);
+  color:#63e6be;
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+  font-size:clamp(18px,3vw,27px);
+  line-height:1.1;
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  text-shadow:none;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  box-shadow:0 8px 22px rgba(0,0,0,.20);
+  animation:none;
+  z-index:auto;
+}
+
+.home-page .prize-machine-shell .machine-number{
+  position:static;
+  width:100%;
+  height:auto;
+  min-height:120px;
+  margin:22px 0 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:#fff;
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+  font-style:normal;
+  font-weight:950;
+  font-size:clamp(76px,13vw,138px);
+  line-height:.9;
+  letter-spacing:.04em;
+  text-shadow:0 0 30px rgba(99,230,190,.12);
+  z-index:auto;
+}
+
+.home-page .prize-machine-shell .machine-number span{
+  display:flex;
+  flex:0 0 92px;
+  width:92px;
+  height:112px;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:14px;
+  background:linear-gradient(145deg,#1b2532,#0e151e);
+  color:#fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 10px 24px rgba(0,0,0,.24);
+}
+
+.home-page .prize-machine-shell .machine-number.empty-number span{
+  color:#697586;
+}
+
+.home-page .prize-machine-shell .machine-date{
+  position:static;
+  width:100%;
+  margin:0;
+  color:#aeb8c6;
+  text-align:center;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.01em;
+  white-space:normal;
+  text-shadow:none;
+  z-index:auto;
+}
+
+.home-page .prize-machine-shell .machine-bottom span:last-child{
+  color:#63e6be;
+}
+
+@media(max-width:560px){
+  .home-page .prize-machine-shell.machine{
+    width:100%;
+    padding:9px;
+    border-radius:19px;
+  }
+
+  .home-page .prize-machine-shell .machine-screen{
+    padding:20px 12px 18px !important;
+    border-radius:15px !important;
+  }
+
+  .home-page .prize-machine-shell .machine-game{
+    min-width:145px;
+    padding:8px 15px;
+    font-size:16px;
+  }
+
+  .home-page .prize-machine-shell .machine-number{
+    min-height:84px;
+    margin:16px 0 11px;
+    gap:6px;
+    font-size:64px;
+  }
+
+  .home-page .prize-machine-shell .machine-number span{
+    flex:0 0 70px;
+    width:70px;
+    height:82px;
+    border-radius:10px;
+  }
+
+  .home-page .prize-machine-shell .machine-date{
+    font-size:10px;
+  }
+}
