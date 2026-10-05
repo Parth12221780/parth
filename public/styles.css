@@ -239,6 +239,89 @@ main.has-site-background::before{
   background-attachment:fixed;
   pointer-events:none;
 }
+.prize-machine-shell .machine-top,
+.prize-machine-shell .machine-bottom{display:none}
+.prize-machine-shell .machine-screen{
+  width:min(100%,394px);
+  aspect-ratio:394 / 507;
+  min-height:0 !important;
+  margin:0 auto !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  overflow:hidden;
+  position:relative;
+  display:block !important;
+  background-image:url('/assets/jackpot-machine.webp') !important;
+  background-size:100% 100% !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+  box-shadow:0 18px 45px rgba(0,0,0,.3) !important;
+}
+.prize-machine-shell .machine-screen:before,
+.prize-machine-shell .machine-screen:after{content:none !important}
+.prize-machine-shell .machine-game{
+  position:absolute;
+  left:14%;
+  right:14%;
+  top:15%;
+  min-width:0;
+  margin:0;
+  padding:5px 8px;
+  border:0;
+  background:transparent;
+  color:#f7d22c;
+  font-family:Arial,sans-serif;
+  font-size:clamp(19px,4.6vw,32px);
+  line-height:1;
+  font-weight:950;
+  letter-spacing:.01em;
+  text-transform:uppercase;
+  text-shadow:2px 2px 0 #9b5b00,0 0 3px #fff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  box-shadow:none;
+  z-index:2;
+}
+.prize-machine-shell .machine-number{
+  position:absolute;
+  left:28%;
+  right:28%;
+  top:42%;
+  min-height:0;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#d61d25;
+  font-family:Georgia,serif;
+  font-style:italic;
+  font-weight:950;
+  font-size:clamp(58px,13vw,100px);
+  line-height:.9;
+  letter-spacing:.06em;
+  text-shadow:1px 2px 0 #fff,2px 3px 0 rgba(0,0,0,.25);
+  z-index:2;
+}
+.prize-machine-shell .machine-number.empty-number{
+  color:#7d8791;
+  font-size:62px;
+  text-shadow:1px 2px 0 #fff;
+}
+.prize-machine-shell .machine-date{
+  position:absolute;
+  left:15%;
+  right:15%;
+  bottom:3%;
+  margin:0;
+  color:#24313c;
+  text-align:center;
+  font-size:9px;
+  font-weight:800;
+  z-index:2;
+  text-shadow:0 1px 0 #fff;
+}
 .site-result-intro{width:min(100% - 30px,1120px);margin:12px auto 20px;border:1px solid rgba(99,230,190,.18);border-radius:14px;background:linear-gradient(135deg,rgba(20,30,43,.96),rgba(10,15,23,.98));box-shadow:0 12px 32px rgba(0,0,0,.22);overflow:hidden}.site-result-intro-inner{border-top:3px solid #63e6be;padding:12px 20px 13px;text-align:center}.site-result-intro p{margin:0;color:#aeb9c8;font-size:13px;line-height:1.55}.site-result-intro strong{color:#63e6be;font-weight:900}.site-result-date{color:#f4f7fb;font-weight:800}
   width:min(100% - 30px,1120px);
   margin:10px auto 18px;
