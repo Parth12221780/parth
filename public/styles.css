@@ -390,6 +390,12 @@ main.has-site-background::before{
 }
 /* Top result information box — shared across every public page. */
 .site-result-intro{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:relative;
+  z-index:1;
+  isolation:isolate;
   width:min(100% - 36px,1120px);
   margin:12px auto 20px;
   border:1px solid rgba(190,28,45,.20);
