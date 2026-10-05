@@ -27,4 +27,26 @@
 async function loadCentralMachine(){try{const r=await fetch("/api/results/latest"),data=await r.json(),x=data.latest;if(!x)return;document.getElementById("machineGame").textContent=x.name;const mv=String(x.result_value??"").replace(/\D/g,"").padStart(3,"0").slice(-3);document.getElementById("machineNumber").innerHTML=mv.split("").map(d=>"<span>"+d+"</span>").join("");document.getElementById("machineNumber").classList.remove("empty-number");document.getElementById("machineDate").textContent=new Date(x.result_date+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})+(x.result_time?" · "+x.result_time:"");document.getElementById("machineTime").textContent=x.result_time||"Latest update";document.getElementById("machineStatus").textContent="Updated";}catch(e){}}
 loadCentralMachine();setInterval(loadCentralMachine,30000);
 </script><p class="eyebrow">ABOUT</p><h1>About Number Results Portal</h1><p>This portal organizes latest available number results and historical records in one place. Each game keeps its own latest result until a new result is manually entered by the administrator.</p><h2>How it works</h2><p>The public website reads published results from the portal database. Historical entries remain available after newer results are added.</p><h2>Contact</h2><p>For corrections, general enquiries or data-related requests, use the contact details provided by the portal administrator.</p><div class="contact-card"><strong>Contact</strong><p>Email: <span>admin@example.com</span></p><p class="muted">Replace this placeholder with the final contact email before launch.</p></div></main>
-<footer class="footer"><div class="wrap footer-inner"><span>© <span id="y"></span> Number Results Portal</span><span><a href="/disclaimer.html">Disclaimer & Privacy</a></span></div></footer><script>document.getElementById('y').textContent=new Date().getFullYear()</script></body></html>
+<footer class="footer"><div class="wrap footer-inner"><span>© <span id="y"></span> Number Results Portal</span><span><a href="/disclaimer.html">Disclaimer & Privacy</a></span></div></footer><script>document.getElementById('y').textContent=new Date().getFullYear()</script><script>
+function updateMachineClock(){
+  const el=document.getElementById("machineDate");
+  if(!el)return;
+  const now=new Date();
+  const parts=new Intl.DateTimeFormat("en-IN",{
+    timeZone:"Asia/Kolkata",
+    weekday:"long",
+    day:"2-digit",
+    month:"long",
+    year:"numeric",
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit",
+    hour12:true
+  }).formatToParts(now);
+  const get=k=>parts.find(p=>p.type===k)?.value||"";
+  el.textContent=get("weekday")+" · "+get("day")+" "+get("month")+" "+get("year")+" · "+get("hour")+":"+get("minute")+":"+get("second")+" "+get("dayPeriod")+" IST";
+}
+updateMachineClock();
+setInterval(updateMachineClock,1000);
+</script>
+</body></html>
