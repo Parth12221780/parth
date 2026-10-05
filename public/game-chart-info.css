@@ -1,0 +1,73 @@
+/* Shared game-page About Chart section — matches the supplied yellow/blue reference. */
+.game-chart-info{
+  width:100%;
+  margin:28px 0 30px;
+  padding:10px 9px 16px;
+  border:1px solid #222;
+  border-radius:3px;
+  background:rgba(255,255,255,.96);
+  color:#111;
+  box-shadow:0 3px 10px rgba(0,0,0,.10);
+}
+.game-chart-info-title{
+  margin:0 0 7px;
+  text-align:center;
+  color:#111;
+  font-size:18px;
+  line-height:1.25;
+  font-weight:900;
+}
+.game-chart-info-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+.game-chart-info-card{
+  padding:8px 9px 10px;
+  border-radius:3px;
+  color:#111;
+}
+.game-chart-info-card h3{
+  margin:0 0 5px;
+  font-size:13px;
+  line-height:1.25;
+  font-weight:900;
+}
+.game-chart-info-card p{
+  margin:0;
+  font-size:12px;
+  line-height:1.5;
+}
+.game-chart-info-card-primary{
+  background:#fff10a;
+}
+.game-chart-info-card-secondary{
+  background:#2119c9;
+  color:#fff;
+}
+.game-chart-info-card-secondary h3{
+  color:#fff;
+}
+@media(max-width:560px){
+  .game-chart-info{
+    margin:22px 0 24px;
+    padding:8px 7px 12px;
+  }
+  .game-chart-info-title{
+    font-size:16px;
+    margin-bottom:6px;
+  }
+  .game-chart-info-grid{
+    gap:7px;
+  }
+  .game-chart-info-card{
+    padding:8px;
+  }
+  .game-chart-info-card h3{
+    font-size:12px;
+  }
+  .game-chart-info-card p{
+    font-size:11px;
+    line-height:1.5;
+  }
+}
