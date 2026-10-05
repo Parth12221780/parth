@@ -22,6 +22,13 @@
 </div>
 <script>
 (()=>{const p=location.pathname.replace(/\/$/,'')||'/';document.querySelectorAll('.game-switcher a').forEach(a=>{const h=new URL(a.href).pathname.replace(/\/$/,'');if(h===p)a.classList.add('active');});})();
+</script><section class="site-result-intro" aria-label="Result archive information">
+  <div class="site-result-intro-inner">
+    <p><strong>Result archive for <span class="site-result-date">5th October 2026</span></strong> covering Desawar, Deogharcity, Delhi Bazar, Shree Ganesh, Faridabad and other listed results. Numbers below are posted as results are declared, while the archive keeps available historical records in one organized place.</p>
+  </div>
+</section>
+<script>
+(()=>{const el=document.querySelector(".site-result-date");if(el){const d=new Date();el.textContent=d.toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"}).replace(/^(.+)$/,(m)=>{const day=d.getDate(),s=day%10===1&&day!==11?"st":day%10===2&&day!==12?"nd":day%10===3&&day!==13?"rd":"th";return day+s+" "+d.toLocaleDateString("en-IN",{month:"long",year:"numeric"});});}})();
 </script>
 <div class="social-cta"><a class="social-btn whatsapp-btn" href="https://wa.me/918207373406" target="_blank" rel="noopener noreferrer">WhatsApp</a><a class="social-btn telegram-btn" href="https://t.me/+5MHFX7UjtJYwYWI1" target="_blank" rel="noopener noreferrer">Telegram</a></div><div id="newResultAlert" class="new-result-alert" hidden><div><strong>🔔 New Result Published</strong><span id="newResultText">A new result has been updated.</span></div><button id="dismissResultAlert" type="button" aria-label="Dismiss">×</button></div><main>
 <section class="hero wrap"><div><p class="eyebrow">LATEST RESULT DISPLAY</p><h1>Latest results, <span>shown clearly.</span></h1><p class="hero-copy">Today's and yesterday's results in one simple view. Each game keeps its own result until a new result is entered.</p></div><div class="hero-meta"><span id="todayLabel">Loading date…</span><span class="live-dot">● Live database</span></div></section>

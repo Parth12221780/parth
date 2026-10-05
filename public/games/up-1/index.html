@@ -13,6 +13,13 @@
 </div>
 <script>
 (()=>{const p=location.pathname.replace(/\/$/,'')||'/';document.querySelectorAll('.game-switcher a').forEach(a=>{const h=new URL(a.href).pathname.replace(/\/$/,'');if(h===p)a.classList.add('active');});})();
+</script><section class="site-result-intro" aria-label="Result archive information">
+  <div class="site-result-intro-inner">
+    <p><strong>Result archive for <span class="site-result-date">5th October 2026</span></strong> covering Desawar, Deogharcity, Delhi Bazar, Shree Ganesh, Faridabad and other listed results. Numbers below are posted as results are declared, while the archive keeps available historical records in one organized place.</p>
+  </div>
+</section>
+<script>
+(()=>{const el=document.querySelector(".site-result-date");if(el){const d=new Date();el.textContent=d.toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"}).replace(/^(.+)$/,(m)=>{const day=d.getDate(),s=day%10===1&&day!==11?"st":day%10===2&&day!==12?"nd":day%10===3&&day!==13?"rd":"th";return day+s+" "+d.toLocaleDateString("en-IN",{month:"long",year:"numeric"});});}})();
 </script><main class="wrap page game-page"><section class="game-hero"><div><p class="eyebrow">GAME RESULTS</p><h1>UP 1</h1><p class="page-intro">Complete year-wise result chart for UP 1.</p></div><a class="button ghost" href="/">← All Games</a></section><section class="machine-wrap wrap"><div class="machine"><div class="machine-top"><span class="machine-label">LATEST UPDATED RESULT</span><span id="machineTime">—</span></div><div class="machine-screen" id="machineScreen"><div class="machine-game" id="machineGame">RESULT NOT UPDATED</div><div class="machine-number empty-number" id="machineNumber">—</div><div class="machine-date" id="machineDate">No result has been entered yet</div></div><div class="machine-bottom"><span>Central result display</span><span id="machineStatus">Waiting</span></div></div></section><section class="game-chart-section">
 <div class="record-chart-header">
   <h2>UP 1 Record Chart <span id="chartTitleYear">2026</span></h2>
