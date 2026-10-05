@@ -10,14 +10,14 @@
 <header class="site-header"><div class="wrap nav"><a class="brand" href="/">NUMBER<span>RESULTS</span></a><nav><a class="active" href="/">Home</a><a href="/history.html">History</a><a href="/about.html">About</a><a href="/disclaimer.html">Disclaimer</a></nav></div></header>
 <div class="game-switcher" aria-label="All game result pages">
   <div class="wrap game-switcher-inner">
-    <a href="/games/delhi-1/">Delhi 1</a>
-    <a href="/games/up-1/">UP 1</a>
-    <a href="/games/faridabad/">Faridabad</a>
-    <a href="/games/ghaziabad/">Ghaziabad</a>
-    <a href="/games/gali/">Gali</a>
     <a href="/games/desawar/">Desawar</a>
-    <a href="/games/shree-ganesh/">Shree Ganesh</a>
     <a href="/games/delhi-bazar/">Delhi Bazar</a>
+    <a href="/games/shree-ganesh/">Shree Ganesh</a>
+    <a href="/games/faridabad/">Faridabad</a>
+    <a href="/games/up-1/">UP 1</a>
+    <a href="/games/ghaziabad/">Ghaziabad</a>
+    <a href="/games/delhi-1/">Delhi 1</a>
+    <a href="/games/gali/">Gali</a>
   </div>
 </div>
 <script>
@@ -51,14 +51,14 @@
   <div><p class="eyebrow">MONTHLY ARCHIVE</p><h2 id="monthTitle">Monthly Results</h2></div>
   <div class="month-controls"><button class="button ghost" id="prevMonth" type="button">← Previous</button><button class="button ghost" id="nextMonth" type="button">Next →</button></div>
 </div>
-<div class="monthly-scroll"><table class="monthly-chart"><thead><tr><th>Date</th><th>Delhi 1</th><th>UP 1</th><th>Faridabad</th><th>Ghaziabad</th><th>Gali</th><th>Desawar</th><th>Shree Ganesh</th><th>Delhi Bazar</th></tr></thead><tbody id="monthlyBody"><tr><td colspan="9" class="loading">Loading monthly results…</td></tr></tbody></table></div>
+<div class="monthly-scroll"><table class="monthly-chart"><thead><tr><th>Date</th><th>Desawar</th><th>Delhi Bazar</th><th>Shree Ganesh</th><th>Faridabad</th><th>UP 1</th><th>Ghaziabad</th><th>Delhi 1</th><th>Gali</th></tr></thead><tbody id="monthlyBody"><tr><td colspan="9" class="loading">Loading monthly results…</td></tr></tbody></table></div>
 <div id="monthlyStatus" class="chart-status"></div>
 </section>
 <section class="wrap info-strip"><div><strong>One update at a time</strong><span>Each game changes only when its own new result is entered.</span></div><div><strong>History stays safe</strong><span>Older results remain available in the History section.</span></div></section>
 </main>
 <footer class="footer"><div class="wrap footer-inner"><span>© <span id="year"></span> Number Results Portal</span><span><a href="/about.html">About & Contact</a> · <a href="/disclaimer.html">Disclaimer & Privacy</a></span></div></footer>
 <script>
-const GAME_SLUGS=["delhi-1","up-1","faridabad","ghaziabad","gali","desawar","shree-ganesh","delhi-bazar"];
+const GAME_SLUGS=["desawar","delhi-bazar","shree-ganesh","faridabad","up-1","ghaziabad","delhi-1","gali"];
 let latestInitialized=false;
 let lastLatestKey=localStorage.getItem("nrp_last_latest_key")||"";
 function showNewResultAlert(row){

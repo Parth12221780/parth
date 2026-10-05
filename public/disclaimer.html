@@ -3,18 +3,21 @@
 <body><header class="site-header"><div class="wrap nav"><a class="brand" href="/">NUMBER<span>RESULTS</span></a><nav><a href="/">Home</a><a href="/history.html">History</a><a href="/about.html">About</a><a class="active" href="/disclaimer.html">Disclaimer</a></nav></div></header>
 <div class="game-switcher" aria-label="All game result pages">
   <div class="wrap game-switcher-inner">
-    <a href="/games/delhi-1/">Delhi 1</a>
-    <a href="/games/up-1/">UP 1</a>
-    <a href="/games/faridabad/">Faridabad</a>
-    <a href="/games/ghaziabad/">Ghaziabad</a>
-    <a href="/games/gali/">Gali</a>
     <a href="/games/desawar/">Desawar</a>
-    <a href="/games/shree-ganesh/">Shree Ganesh</a>
     <a href="/games/delhi-bazar/">Delhi Bazar</a>
+    <a href="/games/shree-ganesh/">Shree Ganesh</a>
+    <a href="/games/faridabad/">Faridabad</a>
+    <a href="/games/up-1/">UP 1</a>
+    <a href="/games/ghaziabad/">Ghaziabad</a>
+    <a href="/games/delhi-1/">Delhi 1</a>
+    <a href="/games/gali/">Gali</a>
   </div>
 </div>
 <script>
 (()=>{const p=location.pathname.replace(/\/$/,'')||'/';document.querySelectorAll('.game-switcher a').forEach(a=>{const h=new URL(a.href).pathname.replace(/\/$/,'');if(h===p)a.classList.add('active');});})();
 </script>
-<main class="wrap page prose"><p class="eyebrow">IMPORTANT INFORMATION</p><h1>Disclaimer & Privacy</h1><h2>Disclaimer</h2><p>This website is an informational results portal. It does not provide real-money betting, wagering, deposits, withdrawals, wallets or payment services.</p><p>Results are entered and maintained by the portal administrator. Users should independently verify information where accuracy is important and comply with applicable laws and regulations.</p><h2>Privacy</h2><p>We aim to collect only information necessary to operate the website and respond to enquiries. If contact details are submitted, they should be used only for the relevant communication and handled with reasonable security.</p><p>This page is a general informational policy and should be updated with the operator's actual contact details, analytics/cookie practices and applicable legal requirements before public launch.</p></main>
+<main class="wrap page prose"><section class="machine-wrap wrap"><div class="machine"><div class="machine-top"><span class="machine-label">LATEST UPDATED RESULT</span><span id="machineTime">—</span></div><div class="machine-screen" id="machineScreen"><div class="machine-game" id="machineGame">RESULT NOT UPDATED</div><div class="machine-number empty-number" id="machineNumber">—</div><div class="machine-date" id="machineDate">No result has been entered yet</div></div><div class="machine-bottom"><span>Central result display</span><span id="machineStatus">Waiting</span></div></div></section><script>
+async function loadCentralMachine(){try{const r=await fetch("/api/results/latest"),data=await r.json(),x=data.latest;if(!x)return;document.getElementById("machineGame").textContent=x.name;document.getElementById("machineNumber").textContent=x.result_value;document.getElementById("machineNumber").classList.remove("empty-number");document.getElementById("machineDate").textContent=new Date(x.result_date+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})+(x.result_time?" · "+x.result_time:"");document.getElementById("machineTime").textContent=x.result_time||"Latest update";document.getElementById("machineStatus").textContent="Updated";}catch(e){}}
+loadCentralMachine();setInterval(loadCentralMachine,30000);
+</script><p class="eyebrow">IMPORTANT INFORMATION</p><h1>Disclaimer & Privacy</h1><h2>Disclaimer</h2><p>This website is an informational results portal. It does not provide real-money betting, wagering, deposits, withdrawals, wallets or payment services.</p><p>Results are entered and maintained by the portal administrator. Users should independently verify information where accuracy is important and comply with applicable laws and regulations.</p><h2>Privacy</h2><p>We aim to collect only information necessary to operate the website and respond to enquiries. If contact details are submitted, they should be used only for the relevant communication and handled with reasonable security.</p><p>This page is a general informational policy and should be updated with the operator's actual contact details, analytics/cookie practices and applicable legal requirements before public launch.</p></main>
 <footer class="footer"><div class="wrap footer-inner"><span>© <span id="y"></span> Number Results Portal</span><span><a href="/">Back to home</a></span></div></footer><script>document.getElementById('y').textContent=new Date().getFullYear()</script></body></html>
